@@ -1,3 +1,5 @@
+[file name]: admin.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +11,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
         import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
-        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
         
         const firebaseConfig = {
             apiKey: "AIzaSyBpGMx8E7c83_uMjwpS8MkIay_gxKGQrCo",
@@ -33,6 +35,7 @@
         window.ref = ref;
         window.uploadBytes = uploadBytes;
         window.getDownloadURL = getDownloadURL;
+        window.deleteObject = deleteObject;
         
         console.log('Firebase Admin loaded');
     </script>
@@ -723,10 +726,10 @@
             right: 10px;
         }
 
-        /* ===== FLOATING ACTION BUTTON - FIXED Z-INDEX ===== */
+        /* ===== FLOATING ACTION BUTTON - FIXED FOR MOBILE ===== */
         .fab {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px; /* Above tab bar */
             right: 20px;
             width: 56px;
             height: 56px;
@@ -738,7 +741,7 @@
             justify-content: center;
             font-size: 1.5rem;
             box-shadow: var(--shadow-lg);
-            z-index: 99; /* Lower than modal but higher than content */
+            z-index: 90; /* Below modal but above content */
             cursor: pointer;
             transition: var(--transition);
         }
@@ -890,7 +893,7 @@
         /* ===== TOAST NOTIFICATION ===== */
         #toastContainer {
             position: fixed;
-            bottom: 80px;
+            bottom: 140px; /* Above FAB and tab bar */
             left: 0;
             right: 0;
             padding: 0 20px;
@@ -951,6 +954,11 @@
             .content-area {
                 padding: 20px;
             }
+            
+            .fab {
+                bottom: 30px;
+                right: 30px;
+            }
         }
 
         @media (min-width: 1024px) {
@@ -964,6 +972,7 @@
             }
             
             .desktop-sidebar {
+                display: block;
                 width: 250px;
                 background: var(--color-sidebar);
                 position: fixed;
@@ -1008,6 +1017,15 @@
             
             .products-grid {
                 grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .fab {
+                bottom: 40px;
+                right: 40px;
+            }
+            
+            #toastContainer {
+                bottom: 100px;
             }
         }
 
@@ -1332,7 +1350,7 @@
                     <div class="image-upload-area" id="imageUploadArea">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <div class="image-upload-text">Tap to upload images</div>
-                        <div class="image-upload-subtext">Upload up to 5 images</div>
+                        <div class="image-upload-subtext">Upload up to 5 images (Max 2MB each)</div>
                         <input type="file" id="imageUploadInput" multiple accept="image/*" style="display: none;">
                     </div>
                     
@@ -1460,17 +1478,18 @@
         // Import Firebase functions
         import { 
             collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc,
-            query, where, orderBy, limit, serverTimestamp 
+            query, orderBy, limit, serverTimestamp 
         } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
         // Global Variables
         let currentAdmin = null;
         let allProducts = [];
         let allOrders = [];
-        let currentProductImages = [];
+        let currentProductImages = []; // For preview
         let currentImageIndex = 0;
         let pendingAction = null;
-        let imageCache = new Map(); // Cache for product images
+        let uploadedFiles = []; // Store actual File objects for upload
+        let existingImageUrls = []; // Store existing image URLs
 
         // DOM Elements
         const loginPage = document.getElementById('loginPage');
@@ -1496,29 +1515,36 @@
             // Setup event listeners
             setupEventListeners();
             
-            // Check for desktop view
-            checkDesktopView();
+            // Check for desktop view - FIXED with null check
+            setTimeout(() => {
+                checkDesktopView();
+            }, 100);
             
             // Listen for window resize
             window.addEventListener('resize', checkDesktopView);
         });
 
-        // Check if desktop view
+        // Check if desktop view - FIXED
         function checkDesktopView() {
             const desktopSidebar = document.querySelector('.desktop-sidebar');
             const mobileHeader = document.querySelector('.mobile-header');
             const tabBar = document.querySelector('.tab-bar');
+            const searchBar = document.querySelector('.search-bar');
+            
+            if (!desktopSidebar || !mobileHeader || !tabBar) {
+                return; // Elements not loaded yet
+            }
             
             if (window.innerWidth >= 1024) {
                 desktopSidebar.classList.remove('hidden');
                 mobileHeader.classList.add('hidden');
                 tabBar.classList.add('hidden');
-                document.querySelector('.search-bar').classList.remove('search-bar');
+                if (searchBar) searchBar.classList.remove('search-bar');
             } else {
                 desktopSidebar.classList.add('hidden');
                 mobileHeader.classList.remove('hidden');
                 tabBar.classList.remove('hidden');
-                document.querySelector('.search-bar').classList.add('search-bar');
+                if (searchBar) searchBar.classList.add('search-bar');
             }
         }
 
@@ -1685,7 +1711,7 @@
             }
         }
 
-        // Switch Section - FIXED FAB VISIBILITY
+        // Switch Section
         function switchSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
@@ -1695,7 +1721,7 @@
             // Show selected section
             document.getElementById(sectionId + 'Section').classList.add('active');
             
-            // Update FAB visibility - only show on products section
+            // Update FAB visibility
             if (sectionId === 'products') {
                 fabAddProduct.classList.remove('hidden');
             } else {
@@ -1749,45 +1775,19 @@
                     });
                 });
                 
-                // Preload images to cache
-                await preloadProductImages();
-                
             } catch (error) {
                 console.error('Error loading products:', error);
                 throw error;
             }
         }
 
-        // Preload product images to cache
-        async function preloadProductImages() {
-            for (const product of allProducts) {
-                if (product.images && product.images.length > 0) {
-                    for (const imageUrl of product.images) {
-                        if (!imageCache.has(imageUrl)) {
-                            try {
-                                const img = new Image();
-                                img.src = imageUrl;
-                                await new Promise((resolve, reject) => {
-                                    img.onload = resolve;
-                                    img.onerror = reject;
-                                });
-                                imageCache.set(imageUrl, true);
-                            } catch (error) {
-                                console.warn('Failed to preload image:', imageUrl);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // Get safe image URL with fallback - FIXED
-        function getSafeImageUrl(imageUrl, index = 0) {
-            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('blob:'))) {
+        // Get safe image URL
+        function getSafeImageUrl(imageUrl) {
+            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('https'))) {
                 return imageUrl;
             }
-            // Fallback placeholder - FIXED URL
-            return `https://via.placeholder.com/400x300/222/fff?text=Product`;
+            // Use a reliable placeholder
+            return `https://placehold.co/400x300/222/fff?text=Product&font=inter`;
         }
 
         // Load Orders Data
@@ -1829,7 +1829,7 @@
             document.getElementById('desktopOrdersBadge').textContent = ordersCount;
         }
 
-        // Load Products Grid - FIXED IMAGE ERRORS
+        // Load Products Grid
         function loadProductsGrid() {
             if (allProducts.length === 0) {
                 productsEmpty.classList.remove('hidden');
@@ -1845,7 +1845,7 @@
                         <img src="${getSafeImageUrl(product.images[0])}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='${getSafeImageUrl('')}'">
                     </div>
                     <div class="product-content">
                         <div class="product-category">${product.category}</div>
@@ -1913,6 +1913,11 @@
 
         // Open Product Modal
         function openProductModal(productId = null) {
+            // Reset image arrays
+            currentProductImages = [];
+            uploadedFiles = [];
+            existingImageUrls = [];
+            
             if (productId) {
                 // Edit mode
                 const product = allProducts.find(p => p.id === productId);
@@ -1927,8 +1932,10 @@
                     document.getElementById('productRating').value = product.rating || 4.5;
                     document.getElementById('productStatus').value = product.status || 'active';
                     
-                    // Load images
-                    loadProductImages(product.images || []);
+                    // Store existing image URLs
+                    existingImageUrls = product.images || [];
+                    // Load images for preview
+                    loadProductImages(existingImageUrls);
                 }
             } else {
                 // Add mode
@@ -1936,7 +1943,6 @@
                 document.getElementById('productForm').reset();
                 document.getElementById('productId').value = '';
                 document.getElementById('imagePreviewGrid').innerHTML = '';
-                currentProductImages = [];
             }
             
             openModal('productModal');
@@ -1945,18 +1951,24 @@
         // Close Product Modal
         function closeProductModal() {
             closeModal('productModal');
+            // Clean up blob URLs
+            currentProductImages.forEach(url => {
+                if (url.startsWith('blob:')) {
+                    URL.revokeObjectURL(url);
+                }
+            });
         }
 
-        // Load Product Images
-        function loadProductImages(images) {
+        // Load Product Images for preview
+        function loadProductImages(imageUrls) {
             const previewGrid = document.getElementById('imagePreviewGrid');
             previewGrid.innerHTML = '';
-            currentProductImages = images;
+            currentProductImages = [...imageUrls];
             
-            images.forEach((image, index) => {
+            imageUrls.forEach((imageUrl, index) => {
                 previewGrid.innerHTML += `
                     <div class="image-preview">
-                        <img src="${getSafeImageUrl(image, index)}" alt="Product Image">
+                        <img src="${getSafeImageUrl(imageUrl)}" alt="Product Image">
                         <div class="image-remove" onclick="removeImage(${index})">
                             <i class="fas fa-times"></i>
                         </div>
@@ -1984,13 +1996,14 @@
                     continue;
                 }
                 
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast('Image size should be less than 5MB', 'error');
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('Image size should be less than 2MB', 'error');
                     continue;
                 }
                 
                 const imageUrl = URL.createObjectURL(file);
                 currentProductImages.push(imageUrl);
+                uploadedFiles.push(file);
                 
                 const imageIndex = currentProductImages.length - 1;
                 previewGrid.innerHTML += `
@@ -2008,37 +2021,86 @@
 
         // Remove Image
         window.removeImage = function(index) {
+            // If it's a blob URL, revoke it
+            if (currentProductImages[index].startsWith('blob:')) {
+                URL.revokeObjectURL(currentProductImages[index]);
+                // Remove from uploaded files
+                const blobIndex = currentProductImages.findIndex((url, i) => 
+                    i === index && url.startsWith('blob:')
+                );
+                if (blobIndex > -1) {
+                    uploadedFiles.splice(blobIndex, 1);
+                }
+            } else {
+                // Remove from existing images
+                const existingIndex = existingImageUrls.indexOf(currentProductImages[index]);
+                if (existingIndex > -1) {
+                    existingImageUrls.splice(existingIndex, 1);
+                }
+            }
+            
             currentProductImages.splice(index, 1);
             loadProductImages(currentProductImages);
             showToast('Image removed', 'info');
         };
 
-        // Handle Product Save
+        // Upload image to Firebase Storage
+        async function uploadImageToStorage(file) {
+            try {
+                const timestamp = Date.now();
+                const randomString = Math.random().toString(36).substring(2, 15);
+                const fileName = `product_${timestamp}_${randomString}_${file.name}`;
+                const storageRef = ref(storage, `products/${fileName}`);
+                
+                // Upload the file
+                await uploadBytes(storageRef, file);
+                
+                // Get the download URL
+                const downloadURL = await getDownloadURL(storageRef);
+                return downloadURL;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                throw error;
+            }
+        }
+
+        // Handle Product Save - WITH FIREBASE STORAGE UPLOAD
         async function handleProductSave(e) {
             e.preventDefault();
             
             const productId = document.getElementById('productId').value;
             const isEdit = !!productId;
             
-            const productData = {
-                title: document.getElementById('productTitle').value,
-                category: document.getElementById('productCategory').value,
-                price: parseFloat(document.getElementById('productPrice').value),
-                stock: parseInt(document.getElementById('productStock').value),
-                description: document.getElementById('productDescription').value,
-                rating: parseFloat(document.getElementById('productRating').value),
-                status: document.getElementById('productStatus').value,
-                updatedAt: serverTimestamp()
-            };
-            
-            // Handle images (in real app, upload to Firebase Storage)
-            // For now, keep object URLs
-            productData.images = currentProductImages.filter(url => url.startsWith('blob:'));
-            
             try {
                 const saveBtn = document.getElementById('saveProductBtn');
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                 saveBtn.disabled = true;
+                
+                // Upload new images to Firebase Storage
+                const uploadedImageUrls = [];
+                for (const file of uploadedFiles) {
+                    try {
+                        const imageUrl = await uploadImageToStorage(file);
+                        uploadedImageUrls.push(imageUrl);
+                    } catch (uploadError) {
+                        console.error('Failed to upload image:', uploadError);
+                    }
+                }
+                
+                // Combine existing images with newly uploaded ones
+                const allImageUrls = [...existingImageUrls, ...uploadedImageUrls];
+                
+                const productData = {
+                    title: document.getElementById('productTitle').value,
+                    category: document.getElementById('productCategory').value,
+                    price: parseFloat(document.getElementById('productPrice').value),
+                    stock: parseInt(document.getElementById('productStock').value),
+                    description: document.getElementById('productDescription').value,
+                    rating: parseFloat(document.getElementById('productRating').value),
+                    status: document.getElementById('productStatus').value,
+                    images: allImageUrls,
+                    updatedAt: serverTimestamp()
+                };
                 
                 if (isEdit) {
                     const productRef = doc(db, 'products', productId);
@@ -2057,7 +2119,7 @@
                 
             } catch (error) {
                 console.error('Error saving product:', error);
-                showToast('Error saving product', 'error');
+                showToast('Error saving product: ' + error.message, 'error');
             } finally {
                 document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Save';
                 document.getElementById('saveProductBtn').disabled = false;
@@ -2111,7 +2173,7 @@
             const thumbnailGrid = document.getElementById('thumbnailGrid');
             
             if (images.length === 0) {
-                images = ['https://via.placeholder.com/400x300/222/fff?text=No+Image'];
+                images = [getSafeImageUrl('')];
             }
             
             currentProductImages = images;
@@ -2269,7 +2331,12 @@
             
             try {
                 if (type === 'delete') {
+                    // Delete product from Firestore
                     await deleteDoc(doc(db, 'products', id));
+                    
+                    // You could also delete images from storage here if needed
+                    // For now, we'll just delete the document
+                    
                     showToast('Product deleted successfully', 'success');
                     await loadProductsData();
                     loadProductsGrid();
@@ -2337,7 +2404,7 @@
                         <img src="${getSafeImageUrl(product.images[0])}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='${getSafeImageUrl('')}'">
                     </div>
                     <div class="product-content">
                         <div class="product-category">${product.category}</div>
@@ -2506,3 +2573,4 @@
     </script>
 </body>
 </html>
+[file content end]
