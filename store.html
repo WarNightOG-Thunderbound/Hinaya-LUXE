@@ -1,3 +1,5 @@
+[file name]: store.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1226,7 +1228,7 @@
     <div id="toastContainer"></div>
 
     <script type="module">
-        import { collection, getDocs, addDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { collection, getDocs, addDoc, query, orderBy, limit, where } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
         // Global Variables
         let allProducts = [];
@@ -1346,12 +1348,14 @@
             }
         }
 
-        // Get safe image URL
+        // Get safe image URL - FIXED
         function getSafeImageUrl(imageUrl, index = 0) {
+            // If imageUrl is valid
             if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('blob:'))) {
                 return imageUrl;
             }
-            return `https://via.placeholder.com/400x300/222/fff?text=Product+${index + 1}`;
+            // Return a valid placeholder URL
+            return `https://via.placeholder.com/400x300/222/fff?text=Product`;
         }
 
         // Show Products Skeleton
@@ -1390,7 +1394,7 @@
                         <img src="${getSafeImageUrl(product.images[0], 0)}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
                         ${product.featured ? '<span class="product-badge">Featured</span>' : ''}
                         ${product.stock < 5 ? '<span class="product-badge" style="background: var(--color-warning);">Low Stock</span>' : ''}
                     </div>
@@ -1641,7 +1645,7 @@
                 return `
                     <div class="cart-item">
                         <img src="${getSafeImageUrl(item.image, 0)}" alt="${item.title}" class="cart-item-image"
-                             onerror="this.src='https://via.placeholder.com/100/222/fff?text=IMG'">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/100/222/fff?text=IMG'">
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.title}</div>
                             <div class="cart-item-price">PKR ${item.price.toLocaleString()}</div>
@@ -1917,3 +1921,4 @@
     </script>
 </body>
 </html>
+[file content end]
