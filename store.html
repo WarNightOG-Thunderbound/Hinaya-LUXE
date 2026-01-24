@@ -767,8 +767,8 @@
 
         // Global Variables
         let allProducts = [];
+        let allCategories = [];
         let currentCart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
-        let isProductsLoaded = false;
 
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -847,12 +847,59 @@
                     displayProducts(allProducts);
                 }
                 
-                isProductsLoaded = true;
-                
             } catch (error) {
                 console.error('Error loading products:', error);
                 displayNoProducts();
             }
+        }
+
+        // Load Categories
+        async function loadCategories() {
+            try {
+                const categoriesRef = collection(db, 'categories');
+                const q = query(categoriesRef, orderBy('name'));
+                const snapshot = await getDocs(q);
+                
+                allCategories = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allCategories.push({
+                        id: doc.id,
+                        ...data
+                    });
+                });
+
+                // Add "All Products" category
+                allCategories.unshift({
+                    id: 'all',
+                    name: 'All Products',
+                    icon: 'fa-gem'
+                });
+                
+                displayCategories();
+                
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                // Default categories if Firebase fails
+                allCategories = [
+                    { id: 'all', name: 'All Products', icon: 'fa-gem' },
+                    { id: 'fabric', name: 'Premium Fabric', icon: 'fa-tshirt' },
+                    { id: 'organic', name: 'Organic Goods', icon: 'fa-leaf' },
+                    { id: 'perfumes', name: 'Luxury Perfumes', icon: 'fa-spray-can' },
+                    { id: 'tools', name: 'Artisan Tools', icon: 'fa-tools' }
+                ];
+                displayCategories();
+            }
+        }
+
+        // Display Categories
+        function displayCategories() {
+            categoriesGrid.innerHTML = allCategories.map(cat => `
+                <div class="category-card" onclick="filterByCategory('${cat.id}')">
+                    <i class="fas ${cat.icon} category-icon"></i>
+                    <div class="category-name">${cat.name}</div>
+                </div>
+            `).join('');
         }
 
         // Show Skeleton Loading
@@ -881,8 +928,7 @@
         // Display Products - OPTIMIZED
         function displayProducts(products) {
             productsGrid.innerHTML = products.map(product => `
-                <div class="product-card" data-id="${product.id}" 
-                     onclick="handleProductCardClick(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                <div class="product-card" data-id="${product.id}">
                     <div class="product-image">
                         <img src="${product.images[0]}" alt="${product.title}" 
                              loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/222/fff?text=LUXURY'">
@@ -900,10 +946,10 @@
                         <div class="product-footer">
                             <div class="product-price">PKR ${product.price.toLocaleString()}</div>
                             <div class="product-actions">
-                                <button class="btn-icon" onclick="viewProductDetails(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
+                                <button class="btn-icon" onclick="viewProductDetails('${product.id}')">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn-icon" onclick="addToCart(event, '${product.id}')">
+                                <button class="btn-icon" onclick="addToCart('${product.id}')">
                                     <i class="fas fa-shopping-bag"></i>
                                 </button>
                             </div>
@@ -931,20 +977,14 @@
             return stars;
         }
 
-        // Handle Product Card Click
-        function handleProductCardClick(event, product) {
-            // If clicked on action buttons, let those handlers work
-            if (event.target.closest('.product-actions') || 
-                event.target.classList.contains('btn-icon')) {
+        // View Product Details
+        async function viewProductDetails(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) {
+                showToast('Product not found', 'error');
                 return;
             }
             
-            // Otherwise, open quick order modal
-            openQuickOrderModal(product);
-        }
-
-        // Quick Order Modal
-        function openQuickOrderModal(product) {
             const modalContent = `
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
                     <div>
@@ -967,11 +1007,11 @@
                             PKR ${product.price.toLocaleString()}
                         </div>
                         <div style="display: flex; gap: 15px; margin-bottom: 30px;">
-                            <button class="btn btn-primary" onclick="addToCart(null, '${product.id}'); openCartModal();" 
+                            <button class="btn btn-primary" onclick="addToCart('${product.id}'); closeModal('productModal'); openCartModal();" 
                                     style="flex: 1; padding: 16px;">
                                 <i class="fas fa-shopping-bag"></i> Add to Cart
                             </button>
-                            <button class="btn" onclick="quickOrderNow(${JSON.stringify(product).replace(/"/g, '&quot;')})" 
+                            <button class="btn" onclick="addToCart('${product.id}'); closeModal('productModal'); openCheckoutModal();" 
                                     style="flex: 1; background: var(--color-card); color: var(--color-dark); padding: 16px;">
                                 <i class="fas fa-bolt"></i> Order Now
                             </button>
@@ -987,40 +1027,6 @@
             document.getElementById('productModal').classList.add('active');
         }
 
-        // Quick Order Now
-        function quickOrderNow(product) {
-            addToCart(null, product.id);
-            document.getElementById('productModal').classList.remove('active');
-            openCheckoutModal();
-        }
-
-        // View Product Details
-        function viewProductDetails(event, product) {
-            event.stopPropagation();
-            openQuickOrderModal(product);
-        }
-
-        // Load Categories
-        async function loadCategories() {
-            const categories = [
-                { id: 'all', name: 'All Products', icon: 'fa-gem' },
-                { id: 'fabric', name: 'Premium Fabric', icon: 'fa-tshirt' },
-                { id: 'organic', name: 'Organic Goods', icon: 'fa-leaf' },
-                { id: 'perfumes', name: 'Luxury Perfumes', icon: 'fa-spray-can' },
-                { id: 'tools', name: 'Artisan Tools', icon: 'fa-tools' },
-                { id: 'agriculture', name: 'Agriculture', icon: 'fa-tractor' },
-                { id: 'electronics', name: 'Electronics', icon: 'fa-laptop' },
-                { id: 'jewelry', name: 'Fine Jewelry', icon: 'fa-gem' }
-            ];
-            
-            categoriesGrid.innerHTML = categories.map(cat => `
-                <div class="category-card" onclick="filterByCategory('${cat.id}')">
-                    <i class="fas ${cat.icon} category-icon"></i>
-                    <div class="category-name">${cat.name}</div>
-                </div>
-            `).join('');
-        }
-
         // Filter by Category
         function filterByCategory(categoryId) {
             if (categoryId === 'all') {
@@ -1028,12 +1034,15 @@
                 return;
             }
             
+            const category = allCategories.find(c => c.id === categoryId);
+            if (!category) return;
+            
             const filtered = allProducts.filter(product => 
-                product.category.toLowerCase().includes(categoryId.toLowerCase())
+                product.category === category.name
             );
             
             if (filtered.length === 0) {
-                displayNoProducts(`No products found in ${categoryId}`);
+                displayNoProducts(`No products found in ${category.name}`);
             } else {
                 displayProducts(filtered);
             }
@@ -1051,9 +1060,7 @@
         }
 
         // Add to Cart
-        function addToCart(event, productId) {
-            if (event) event.stopPropagation();
-            
+        function addToCart(productId) {
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
             
@@ -1180,6 +1187,11 @@
         function openCartModal() {
             updateCartModal();
             document.getElementById('cartModal').classList.add('active');
+        }
+
+        // Close Modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
         // Open Checkout Modal
@@ -1397,7 +1409,6 @@
         document.head.appendChild(style);
 
         // Make functions available globally
-        window.handleProductCardClick = handleProductCardClick;
         window.viewProductDetails = viewProductDetails;
         window.addToCart = addToCart;
         window.filterByCategory = filterByCategory;
@@ -1405,7 +1416,7 @@
         window.removeFromCart = removeFromCart;
         window.openCartModal = openCartModal;
         window.openCheckoutModal = openCheckoutModal;
-        window.quickOrderNow = quickOrderNow;
+        window.closeModal = closeModal;
         window.scrollToSection = scrollToSection;
 
     </script>
