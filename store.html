@@ -8,6 +8,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
         import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { getStorage } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
         
         const firebaseConfig = {
             apiKey: "AIzaSyBpGMx8E7c83_uMjwpS8MkIay_gxKGQrCo",
@@ -20,6 +21,7 @@
 
         window.firebaseApp = initializeApp(firebaseConfig);
         window.db = getFirestore(firebaseApp);
+        window.storage = getStorage(firebaseApp);
         console.log('Firebase loaded');
     </script>
     <!-- Fonts & Icons -->
@@ -1226,13 +1228,13 @@
     <div id="toastContainer"></div>
 
     <script type="module">
-        import { collection, getDocs, addDoc, query, orderBy, limit, where } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { collection, getDocs, addDoc, query, orderBy, limit } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { ref, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
 
         // Global Variables
         let allProducts = [];
         let currentProductImages = [];
         let currentImageIndex = 0;
-        let imageCache = new Map();
 
         // DOM Elements
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -1287,34 +1289,38 @@
             `;
         }
 
-        // Load Products
+        // Load Products - SIMPLIFIED QUERY TO AVOID INDEX ERROR
         async function loadProducts() {
             try {
                 showProductsSkeleton();
                 
                 const productsRef = collection(db, 'products');
-                const q = query(productsRef, where('status', '==', 'active'), orderBy('createdAt', 'desc'), limit(50));
+                // Simple query without where clause to avoid index error
+                const q = query(productsRef, orderBy('createdAt', 'desc'), limit(50));
                 const snapshot = await getDocs(q);
                 
                 allProducts = [];
-                snapshot.forEach(doc => {
+                for (const doc of snapshot.docs) {
                     const data = doc.data();
-                    allProducts.push({
-                        id: doc.id,
-                        title: data.title || 'No Title',
-                        description: data.description || '',
-                        price: data.price || 0,
-                        category: data.category || 'Uncategorized',
-                        images: data.images || [],
-                        stock: data.stock || 0,
-                        featured: data.featured || false,
-                        rating: data.rating || 4.5
-                    });
-                });
+                    // Filter active products client-side
+                    if (data.status !== 'inactive') {
+                        const images = await getProductImages(data.images || []);
+                        
+                        allProducts.push({
+                            id: doc.id,
+                            title: data.title || 'No Title',
+                            description: data.description || '',
+                            price: data.price || 0,
+                            category: data.category || 'Uncategorized',
+                            images: images,
+                            stock: data.stock || 0,
+                            featured: data.featured || false,
+                            rating: data.rating || 4.5,
+                            status: data.status || 'active'
+                        });
+                    }
+                }
 
-                // Preload images
-                await preloadProductImages();
-                
                 displayProducts(allProducts);
                 
             } catch (error) {
@@ -1323,36 +1329,48 @@
             }
         }
 
-        // Preload product images
-        async function preloadProductImages() {
-            for (const product of allProducts) {
-                if (product.images && product.images.length > 0) {
-                    for (const imageUrl of product.images) {
-                        if (!imageCache.has(imageUrl)) {
+        // Get product images with fallback
+        async function getProductImages(imageUrls) {
+            const images = [];
+            
+            if (imageUrls && imageUrls.length > 0) {
+                for (const imageUrl of imageUrls) {
+                    try {
+                        if (imageUrl.startsWith('blob:')) {
+                            // Skip blob URLs (temporary uploads)
+                            continue;
+                        } else if (imageUrl.startsWith('http')) {
+                            // Already a valid URL
+                            images.push(imageUrl);
+                        } else {
+                            // Try to get from Firebase Storage
                             try {
-                                const img = new Image();
-                                img.src = getSafeImageUrl(imageUrl);
-                                await new Promise((resolve, reject) => {
-                                    img.onload = resolve;
-                                    img.onerror = reject;
-                                });
-                                imageCache.set(imageUrl, true);
-                            } catch (error) {
-                                console.warn('Failed to preload image:', imageUrl);
+                                const storageRef = ref(storage, imageUrl);
+                                const url = await getDownloadURL(storageRef);
+                                images.push(url);
+                            } catch (storageError) {
+                                console.warn('Failed to get image from storage:', imageUrl);
+                                // Use placeholder
+                                images.push(getPlaceholderImage());
                             }
                         }
+                    } catch (error) {
+                        console.warn('Error processing image:', error);
+                        images.push(getPlaceholderImage());
                     }
                 }
             }
+            
+            // If no images, add a placeholder
+            if (images.length === 0) {
+                images.push(getPlaceholderImage());
+            }
+            
+            return images;
         }
 
-        // Get safe image URL - FIXED
-        function getSafeImageUrl(imageUrl, index = 0) {
-            // If imageUrl is valid
-            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('blob:'))) {
-                return imageUrl;
-            }
-            // Return a valid placeholder URL
+        // Get placeholder image
+        function getPlaceholderImage() {
             return `https://via.placeholder.com/400x300/222/fff?text=Product`;
         }
 
@@ -1389,10 +1407,10 @@
             productsGrid.innerHTML = products.map(product => `
                 <div class="product-card" onclick="viewProductDetails(event, ${JSON.stringify(product).replace(/"/g, '&quot;')})">
                     <div class="product-image">
-                        <img src="${getSafeImageUrl(product.images[0], 0)}" 
+                        <img src="${product.images[0] || getPlaceholderImage()}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='${getPlaceholderImage()}'">
                         ${product.featured ? '<span class="product-badge">Featured</span>' : ''}
                         ${product.stock < 5 ? '<span class="product-badge" style="background: var(--color-warning);">Low Stock</span>' : ''}
                     </div>
@@ -1491,13 +1509,13 @@
             const modalContent = `
                 <div class="image-gallery mb-20">
                     <div class="main-image" id="mainImageView">
-                        <img src="${getSafeImageUrl(product.images[0], 0)}" alt="${product.title}">
+                        <img src="${product.images[0] || getPlaceholderImage()}" alt="${product.title}">
                     </div>
                     
                     <div class="thumbnail-grid" id="thumbnailGrid">
                         ${(product.images || []).map((image, index) => `
                             <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeImage(${index})">
-                                <img src="${getSafeImageUrl(image, index)}" alt="Thumbnail ${index + 1}">
+                                <img src="${image || getPlaceholderImage()}" alt="Thumbnail ${index + 1}">
                             </div>
                         `).join('')}
                     </div>
@@ -1552,7 +1570,7 @@
             
             currentImageIndex = index;
             const mainImage = document.getElementById('mainImageView');
-            mainImage.innerHTML = `<img src="${getSafeImageUrl(currentProductImages[index], index)}" alt="Product Image">`;
+            mainImage.innerHTML = `<img src="${currentProductImages[index] || getPlaceholderImage()}" alt="Product Image">`;
             
             // Update active thumbnail
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
@@ -1642,8 +1660,8 @@
                 
                 return `
                     <div class="cart-item">
-                        <img src="${getSafeImageUrl(item.image, 0)}" alt="${item.title}" class="cart-item-image"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/100/222/fff?text=IMG'">
+                        <img src="${item.image || getPlaceholderImage()}" alt="${item.title}" class="cart-item-image"
+                             onerror="this.onerror=null; this.src='${getPlaceholderImage()}'">
                         <div class="cart-item-details">
                             <div class="cart-item-title">${item.title}</div>
                             <div class="cart-item-price">PKR ${item.price.toLocaleString()}</div>
