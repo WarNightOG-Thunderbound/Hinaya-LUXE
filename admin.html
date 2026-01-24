@@ -723,7 +723,7 @@
             right: 10px;
         }
 
-        /* ===== FLOATING ACTION BUTTON ===== */
+        /* ===== FLOATING ACTION BUTTON - FIXED Z-INDEX ===== */
         .fab {
             position: fixed;
             bottom: 20px;
@@ -738,7 +738,7 @@
             justify-content: center;
             font-size: 1.5rem;
             box-shadow: var(--shadow-lg);
-            z-index: 100;
+            z-index: 99; /* Lower than modal but higher than content */
             cursor: pointer;
             transition: var(--transition);
         }
@@ -757,7 +757,7 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 2000;
+            z-index: 1000;
             padding: 20px;
             backdrop-filter: blur(10px);
         }
@@ -1279,7 +1279,7 @@
             </div>
         </div>
 
-        <!-- Floating Action Button -->
+        <!-- Floating Action Button - Hidden on Settings -->
         <div class="fab hidden" id="fabAddProduct">
             <i class="fas fa-plus"></i>
         </div>
@@ -1685,7 +1685,7 @@
             }
         }
 
-        // Switch Section
+        // Switch Section - FIXED FAB VISIBILITY
         function switchSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
@@ -1695,7 +1695,7 @@
             // Show selected section
             document.getElementById(sectionId + 'Section').classList.add('active');
             
-            // Update FAB visibility
+            // Update FAB visibility - only show on products section
             if (sectionId === 'products') {
                 fabAddProduct.classList.remove('hidden');
             } else {
@@ -1781,13 +1781,13 @@
             }
         }
 
-        // Get safe image URL with fallback
+        // Get safe image URL with fallback - FIXED
         function getSafeImageUrl(imageUrl, index = 0) {
-            if (imageUrl && imageUrl.startsWith('http')) {
+            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('blob:'))) {
                 return imageUrl;
             }
-            // Fallback placeholder
-            return `https://via.placeholder.com/400x300/222/fff?text=Product+${index + 1}`;
+            // Fallback placeholder - FIXED URL
+            return `https://via.placeholder.com/400x300/222/fff?text=Product`;
         }
 
         // Load Orders Data
@@ -1829,7 +1829,7 @@
             document.getElementById('desktopOrdersBadge').textContent = ordersCount;
         }
 
-        // Load Products Grid
+        // Load Products Grid - FIXED IMAGE ERRORS
         function loadProductsGrid() {
             if (allProducts.length === 0) {
                 productsEmpty.classList.remove('hidden');
@@ -1842,10 +1842,10 @@
             productsGrid.innerHTML = allProducts.map(product => `
                 <div class="product-card" data-id="${product.id}">
                     <div class="product-image">
-                        <img src="${getSafeImageUrl(product.images[0], 0)}" 
+                        <img src="${getSafeImageUrl(product.images[0])}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
                     </div>
                     <div class="product-content">
                         <div class="product-category">${product.category}</div>
@@ -2118,12 +2118,12 @@
             currentImageIndex = 0;
             
             // Set main image
-            mainImage.innerHTML = `<img src="${getSafeImageUrl(images[0], 0)}" alt="Product Image">`;
+            mainImage.innerHTML = `<img src="${getSafeImageUrl(images[0])}" alt="Product Image">`;
             
             // Create thumbnails
             thumbnailGrid.innerHTML = images.map((image, index) => `
                 <div class="thumbnail ${index === 0 ? 'active' : ''}" onclick="changeImage(${index})">
-                    <img src="${getSafeImageUrl(image, index)}" alt="Thumbnail ${index + 1}">
+                    <img src="${getSafeImageUrl(image)}" alt="Thumbnail ${index + 1}">
                 </div>
             `).join('');
         }
@@ -2134,7 +2134,7 @@
             
             currentImageIndex = index;
             const mainImage = document.getElementById('mainImageView');
-            mainImage.innerHTML = `<img src="${getSafeImageUrl(currentProductImages[index], index)}" alt="Product Image">`;
+            mainImage.innerHTML = `<img src="${getSafeImageUrl(currentProductImages[index])}" alt="Product Image">`;
             
             // Update active thumbnail
             document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
@@ -2334,10 +2334,10 @@
             productsGrid.innerHTML = filtered.map(product => `
                 <div class="product-card" data-id="${product.id}">
                     <div class="product-image">
-                        <img src="${getSafeImageUrl(product.images[0], 0)}" 
+                        <img src="${getSafeImageUrl(product.images[0])}" 
                              alt="${product.title}"
                              loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
+                             onerror="this.onerror=null; this.src='https://via.placeholder.com/400x300/222/fff?text=Product'">
                     </div>
                     <div class="product-content">
                         <div class="product-category">${product.category}</div>
