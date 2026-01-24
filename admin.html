@@ -1,3 +1,5 @@
+[file name]: admin.html
+[file content begin]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +39,6 @@
         console.log('Firebase Admin loaded');
     </script>
     <!-- Charts & UI Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -237,18 +238,6 @@
             position: absolute; left: 15px; top: 50%; 
             transform: translateY(-50%); color: var(--color-gray);
         }
-        .notifications { position: relative; }
-        .notifications-btn {
-            width: 45px; height: 45px; border-radius: 12px; background: var(--color-primary);
-            color: var(--color-dark); display: flex; align-items: center;
-            justify-content: center; font-size: 1.2rem; border: 1px solid var(--color-border);
-        }
-        .notification-badge {
-            position: absolute; top: -5px; right: -5px; background: var(--color-error);
-            color: white; font-size: 0.7rem; width: 20px; height: 20px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 700;
-        }
 
         /* ===== CONTENT AREA ===== */
         .content-area {
@@ -282,12 +271,6 @@
             align-items: center; justify-content: center; font-size: 1.5rem;
             background: rgba(212, 175, 55, 0.1); color: var(--color-secondary);
         }
-        .card-trend {
-            font-size: 0.9rem; padding: 4px 10px; border-radius: 20px;
-            font-weight: 600; display: flex; align-items: center; gap: 5px;
-        }
-        .trend-up { background: rgba(39, 174, 96, 0.1); color: var(--color-success); }
-        .trend-down { background: rgba(231, 76, 60, 0.1); color: var(--color-error); }
         .card-title { 
             color: var(--color-gray); font-size: 0.95rem; text-transform: uppercase;
             letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 600;
@@ -297,31 +280,6 @@
             margin-bottom: 5px;
         }
         .card-subtext { color: var(--color-gray); font-size: 0.9rem; }
-
-        /* ===== CHARTS ===== */
-        .charts-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 25px; margin-bottom: 40px;
-        }
-        @media (max-width: 1200px) {
-            .charts-grid { grid-template-columns: 1fr; }
-        }
-        .chart-container {
-            background: var(--color-card); border-radius: 18px; padding: 30px;
-            border: 1px solid var(--color-border);
-        }
-        .chart-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px;
-        }
-        .chart-title { font-size: 1.3rem; font-weight: 600; }
-        .chart-controls { display: flex; gap: 10px; }
-        .chart-controls select {
-            padding: 8px 15px; background: var(--color-primary); 
-            border: 1px solid var(--color-border); border-radius: 8px;
-            color: var(--color-dark); font-size: 0.9rem;
-        }
-        .chart-wrapper { position: relative; height: 300px; }
 
         /* ===== DATA TABLES ===== */
         .data-table-container {
@@ -479,7 +437,6 @@
         @media (max-width: 768px) {
             .login-container { padding: 30px; margin: 20px; }
             .dashboard-cards { grid-template-columns: 1fr; }
-            .charts-grid { grid-template-columns: 1fr; }
             .form-grid { grid-template-columns: 1fr; }
             .search-box input { width: 200px; }
             .search-box input:focus { width: 250px; }
@@ -508,12 +465,12 @@
                 <div class="form-group">
                     <label class="form-label">Email Address</label>
                     <input type="email" class="form-input" id="adminEmail" 
-                           value="warnightog.thunderbound@gmail.com" required autocomplete="email">
+                           placeholder="Enter admin email" required autocomplete="email">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
                     <input type="password" class="form-input" id="adminPassword" 
-                           value="School123&" required autocomplete="current-password">
+                           placeholder="Enter password" required autocomplete="current-password">
                 </div>
                 <div id="loginError" class="error-message hidden">
                     <i class="fas fa-exclamation-circle"></i>
@@ -554,10 +511,7 @@
                 <div class="nav-item" data-section="categories">
                     <div class="nav-icon"><i class="fas fa-tags"></i></div>
                     <div class="nav-text">Categories</div>
-                </div>
-                <div class="nav-item" data-section="analytics">
-                    <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
-                    <div class="nav-text">Analytics</div>
+                    <div class="nav-badge" id="categoriesBadge">0</div>
                 </div>
                 <div class="nav-item" data-section="customers">
                     <div class="nav-icon"><i class="fas fa-users"></i></div>
@@ -568,10 +522,6 @@
                     <div class="nav-icon"><i class="fas fa-warehouse"></i></div>
                     <div class="nav-text">Inventory</div>
                 </div>
-                <div class="nav-item" data-section="reports">
-                    <div class="nav-icon"><i class="fas fa-file-export"></i></div>
-                    <div class="nav-text">Reports</div>
-                </div>
                 <div class="nav-item" data-section="settings">
                     <div class="nav-icon"><i class="fas fa-cog"></i></div>
                     <div class="nav-text">Settings</div>
@@ -579,10 +529,10 @@
             </nav>
             <div class="sidebar-footer">
                 <div class="user-info">
-                    <div class="user-avatar">WA</div>
+                    <div class="user-avatar">AD</div>
                     <div class="user-details">
-                        <div class="user-name" id="userName">WarNightOG</div>
-                        <div class="user-email" id="userEmail">warnightog.thunderbound@gmail.com</div>
+                        <div class="user-name" id="userName">Administrator</div>
+                        <div class="user-email" id="userEmail">admin@hinayaluxe.com</div>
                     </div>
                 </div>
                 <button class="btn btn-primary w-full" id="logoutBtn">
@@ -606,12 +556,6 @@
                         <i class="fas fa-search search-icon"></i>
                         <input type="text" id="globalSearch" placeholder="Search everything...">
                     </div>
-                    <div class="notifications">
-                        <button class="notifications-btn">
-                            <i class="fas fa-bell"></i>
-                        </button>
-                        <div class="notification-badge" id="notificationBadge">3</div>
-                    </div>
                 </div>
             </div>
 
@@ -623,31 +567,22 @@
                         <div class="dashboard-card">
                             <div class="card-header">
                                 <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
-                                <div class="card-trend trend-up" id="ordersTrend">
-                                    <i class="fas fa-arrow-up"></i> 12.5%
-                                </div>
                             </div>
                             <div class="card-title">Total Orders</div>
                             <div class="card-value" id="totalOrdersCard">0</div>
-                            <div class="card-subtext" id="ordersSubtext">This month</div>
+                            <div class="card-subtext" id="ordersSubtext">All orders</div>
                         </div>
                         <div class="dashboard-card">
                             <div class="card-header">
                                 <div class="card-icon"><i class="fas fa-money-bill-wave"></i></div>
-                                <div class="card-trend trend-up" id="revenueTrend">
-                                    <i class="fas fa-arrow-up"></i> 8.3%
-                                </div>
                             </div>
                             <div class="card-title">Total Revenue</div>
                             <div class="card-value" id="totalRevenueCard">PKR 0</div>
-                            <div class="card-subtext" id="revenueSubtext">This month</div>
+                            <div class="card-subtext" id="revenueSubtext">All time revenue</div>
                         </div>
                         <div class="dashboard-card">
                             <div class="card-header">
                                 <div class="card-icon"><i class="fas fa-box"></i></div>
-                                <div class="card-trend trend-down" id="productsTrend">
-                                    <i class="fas fa-arrow-down"></i> 2.1%
-                                </div>
                             </div>
                             <div class="card-title">Total Products</div>
                             <div class="card-value" id="totalProductsCard">0</div>
@@ -656,46 +591,10 @@
                         <div class="dashboard-card">
                             <div class="card-header">
                                 <div class="card-icon"><i class="fas fa-users"></i></div>
-                                <div class="card-trend trend-up" id="customersTrend">
-                                    <i class="fas fa-arrow-up"></i> 15.7%
-                                </div>
                             </div>
                             <div class="card-title">Total Customers</div>
                             <div class="card-value" id="totalCustomersCard">0</div>
-                            <div class="card-subtext" id="customersSubtext">Active users</div>
-                        </div>
-                    </div>
-
-                    <div class="charts-grid">
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Revenue Overview</div>
-                                <div class="chart-controls">
-                                    <select id="revenuePeriod">
-                                        <option value="week">This Week</option>
-                                        <option value="month" selected>This Month</option>
-                                        <option value="year">This Year</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="revenueChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Top Selling Products</div>
-                                <div class="chart-controls">
-                                    <select id="topProductsPeriod">
-                                        <option value="week">This Week</option>
-                                        <option value="month" selected>This Month</option>
-                                        <option value="year">This Year</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="topProductsChart"></canvas>
-                            </div>
+                            <div class="card-subtext" id="customersSubtext">Unique customers</div>
                         </div>
                     </div>
 
@@ -903,136 +802,92 @@
                     </div>
                 </section>
 
-                <!-- Analytics Section -->
-                <section id="analyticsSection" class="content-section">
+                <!-- Categories Section -->
+                <section id="categoriesSection" class="content-section">
                     <div class="table-header" style="margin-bottom: 30px;">
                         <div>
-                            <h2 style="font-size: 1.8rem; font-weight: 700;">Advanced Analytics</h2>
-                            <p style="color: var(--color-gray); margin-top: 5px;">Comprehensive business insights</p>
+                            <h2 style="font-size: 1.8rem; font-weight: 700;">Category Management</h2>
+                            <p style="color: var(--color-gray); margin-top: 5px;">Manage product categories</p>
                         </div>
                         <div class="table-actions">
-                            <button class="btn btn-primary" onclick="refreshAnalytics()">
-                                <i class="fas fa-sync-alt"></i> Refresh Data
-                            </button>
-                            <button class="btn" style="background: var(--color-card);" onclick="exportAnalytics()">
-                                <i class="fas fa-download"></i> Export All
+                            <button class="btn btn-primary" id="addCategoryBtn">
+                                <i class="fas fa-plus"></i> Add New Category
                             </button>
                         </div>
                     </div>
 
-                    <div class="charts-grid">
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Monthly Revenue Trend</div>
-                                <div class="chart-controls">
-                                    <select id="analyticsYear">
-                                        <option value="2024">2024</option>
-                                        <option value="2023">2023</option>
-                                    </select>
+                    <!-- Category Form (Hidden by default) -->
+                    <div id="categoryFormContainer" class="form-container hidden">
+                        <div class="form-section">
+                            <h3 class="form-section-title" id="categoryFormTitle">Add New Category</h3>
+                            <form id="categoryForm">
+                                <input type="hidden" id="categoryId">
+                                
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Category Name *</label>
+                                        <input type="text" class="form-input" id="categoryName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Category Icon *</label>
+                                        <select class="form-input" id="categoryIcon" required>
+                                            <option value="">Select Icon</option>
+                                            <option value="fa-gem">Gem</option>
+                                            <option value="fa-tshirt">T-Shirt</option>
+                                            <option value="fa-leaf">Leaf</option>
+                                            <option value="fa-spray-can">Spray Can</option>
+                                            <option value="fa-tools">Tools</option>
+                                            <option value="fa-tractor">Tractor</option>
+                                            <option value="fa-laptop">Laptop</option>
+                                            <option value="fa-tshirt">Fabric</option>
+                                            <option value="fa-perfume-bottle">Perfume</option>
+                                            <option value="fa-ring">Ring</option>
+                                            <option value="fa-utensils">Utensils</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="monthlyRevenueChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Product Performance</div>
-                                <div class="chart-controls">
-                                    <select id="performancePeriod">
-                                        <option value="month">This Month</option>
-                                        <option value="quarter">This Quarter</option>
-                                        <option value="year">This Year</option>
-                                    </select>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-textarea" id="categoryDescription" rows="3"></textarea>
                                 </div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="productPerformanceChart"></canvas>
-                            </div>
+
+                                <div style="display: flex; gap: 15px; margin-top: 40px;">
+                                    <button type="submit" class="btn btn-primary" id="saveCategoryBtn">
+                                        <i class="fas fa-save"></i> Save Category
+                                    </button>
+                                    <button type="button" class="btn" id="cancelCategoryBtn" 
+                                            style="background: var(--color-card);">
+                                        <i class="fas fa-times"></i> Cancel
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <div class="charts-grid">
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Category Distribution</div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="categoryChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <div class="chart-header">
-                                <div class="chart-title">Order Status Overview</div>
-                            </div>
-                            <div class="chart-wrapper">
-                                <canvas id="orderStatusChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Export Options -->
+                    <!-- Categories Table -->
                     <div class="data-table-container">
-                        <div class="table-header">
-                            <div>
-                                <h3 style="font-size: 1.3rem; font-weight: 600;">Data Export</h3>
-                                <p style="color: var(--color-gray); margin-top: 5px;">Export analytics data in various formats</p>
-                            </div>
-                        </div>
-                        <div class="export-options">
-                            <div class="export-card" onclick="exportToExcel()">
-                                <i class="fas fa-file-excel"></i>
-                                <h4>Excel Report</h4>
-                                <p>Export all data to Excel format</p>
-                            </div>
-                            <div class="export-card" onclick="exportToCSV()">
-                                <i class="fas fa-file-csv"></i>
-                                <h4>CSV Data</h4>
-                                <p>Export as comma-separated values</p>
-                            </div>
-                            <div class="export-card" onclick="exportToJSON()">
-                                <i class="fas fa-file-code"></i>
-                                <h4>JSON Data</h4>
-                                <p>Export as JSON for developers</p>
-                            </div>
-                            <div class="export-card" onclick="exportToPDF()">
-                                <i class="fas fa-file-pdf"></i>
-                                <h4>PDF Report</h4>
-                                <p>Generate PDF summary report</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Top Products Table -->
-                    <div class="data-table-container">
-                        <div class="table-header">
-                            <div>
-                                <h3 style="font-size: 1.3rem; font-weight: 600;">Top Selling Products</h3>
-                                <p style="color: var(--color-gray); margin-top: 5px;">Based on order quantity</p>
-                            </div>
-                        </div>
                         <div class="table-responsive">
-                            <table id="topProductsTable">
+                            <table id="categoriesTable">
                                 <thead>
                                     <tr>
-                                        <th>Rank</th>
-                                        <th>Product</th>
-                                        <th>Category</th>
-                                        <th>Orders</th>
-                                        <th>Revenue</th>
-                                        <th>Avg. Rating</th>
+                                        <th>ID</th>
+                                        <th>Icon</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Products</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="topProductsBody">
-                                    <tr><td colspan="6">Loading top products...</td></tr>
+                                <tbody id="categoriesTableBody">
+                                    <tr><td colspan="6">Loading categories...</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </section>
 
-                <!-- Other sections (Categories, Customers, Inventory, Reports, Settings) -->
-                <!-- These would follow similar patterns -->
+                <!-- Other sections would follow similar patterns -->
 
             </div>
         </main>
@@ -1066,7 +921,7 @@
         // Import Firebase functions
         import { 
             collection, getDocs, getDoc, addDoc, updateDoc, deleteDoc, doc,
-            query, where, orderBy, limit, startAt, endAt, serverTimestamp 
+            query, where, orderBy, limit, serverTimestamp 
         } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
 
         // Global Variables
@@ -1074,12 +929,6 @@
         let allProducts = [];
         let allOrders = [];
         let allCategories = [];
-        let revenueChart = null;
-        let topProductsChart = null;
-        let monthlyRevenueChart = null;
-        let productPerformanceChart = null;
-        let categoryChart = null;
-        let orderStatusChart = null;
         let pendingAction = null;
 
         // DOM Elements
@@ -1097,14 +946,25 @@
 
         // Initialize Admin Panel
         document.addEventListener('DOMContentLoaded', () => {
+            // Clear any saved credentials
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+            
             // Check authentication state
             onAuthStateChanged(auth, async (user) => {
-                if (user && user.email === 'warnightog.thunderbound@gmail.com') {
+                // Only allow specific admin emails
+                const adminEmails = ['warnightog.thunderbound@gmail.com', 'admin@hinayaluxe.com'];
+                
+                if (user && adminEmails.includes(user.email)) {
                     currentAdmin = user;
                     showAdminPanel();
                     await loadInitialData();
                 } else {
                     showLoginPage();
+                    // Force sign out if not authorized
+                    if (user) {
+                        await signOut(auth);
+                    }
                 }
             });
 
@@ -1116,6 +976,7 @@
             loginPage.classList.add('hidden');
             adminDashboard.classList.remove('hidden');
             userEmail.textContent = currentAdmin.email;
+            document.getElementById('userName').textContent = currentAdmin.email.split('@')[0];
             
             // Set active section
             switchSection('dashboard');
@@ -1126,6 +987,9 @@
             loginPage.classList.remove('hidden');
             adminDashboard.classList.add('hidden');
             loginError.classList.add('hidden');
+            // Clear form fields
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
         }
 
         // Login Handler
@@ -1148,12 +1012,21 @@
                 loginError.classList.remove('hidden');
                 loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Secure Login';
                 loginBtn.disabled = false;
+                
+                // Clear password field for security
+                document.getElementById('adminPassword').value = '';
             }
         });
 
         // Logout Handler
         logoutBtn.addEventListener('click', async () => {
             try {
+                // Clear any cached data
+                allProducts = [];
+                allOrders = [];
+                allCategories = [];
+                currentCart = [];
+                
                 await signOut(auth);
             } catch (error) {
                 console.error('Logout error:', error);
@@ -1170,10 +1043,6 @@
                     loadCategoriesData(),
                     loadDashboardStats()
                 ]);
-                
-                // Initialize charts
-                initRevenueChart();
-                initTopProductsChart();
                 
             } catch (error) {
                 console.error('Error loading initial data:', error);
@@ -1230,12 +1099,14 @@
                 // Calculate totals
                 const totalOrders = allOrders.length;
                 const totalRevenue = allOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-                const pendingOrders = allOrders.filter(order => order.status === 'pending').length;
+                const uniqueCustomers = [...new Set(allOrders.map(order => order.customerPhone))].length;
                 
                 // Update dashboard cards
                 document.getElementById('ordersBadge').textContent = totalOrders;
                 document.getElementById('totalOrdersCard').textContent = totalOrders;
                 document.getElementById('totalRevenueCard').textContent = `PKR ${totalRevenue.toLocaleString()}`;
+                document.getElementById('totalCustomersCard').textContent = uniqueCustomers;
+                document.getElementById('customersBadge').textContent = uniqueCustomers;
                 
                 // Update recent orders
                 loadRecentOrders();
@@ -1247,35 +1118,76 @@
 
         // Load Categories Data
         async function loadCategoriesData() {
-            // For now, use default categories
-            allCategories = [
-                { id: 'fabric', name: 'Premium Fabric', icon: 'fa-tshirt' },
-                { id: 'organic', name: 'Organic Goods', icon: 'fa-leaf' },
-                { id: 'perfumes', name: 'Luxury Perfumes', icon: 'fa-spray-can' },
-                { id: 'tools', name: 'Artisan Tools', icon: 'fa-tools' },
-                { id: 'agriculture', name: 'Agriculture', icon: 'fa-tractor' },
-                { id: 'electronics', name: 'Electronics', icon: 'fa-laptop' },
-                { id: 'jewelry', name: 'Fine Jewelry', icon: 'fa-gem' }
+            try {
+                const categoriesRef = collection(db, 'categories');
+                const q = query(categoriesRef, orderBy('name'));
+                const snapshot = await getDocs(q);
+                
+                allCategories = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    allCategories.push({
+                        id: doc.id,
+                        ...data
+                    });
+                });
+                
+                // If no categories exist, create default ones
+                if (allCategories.length === 0) {
+                    await createDefaultCategories();
+                    await loadCategoriesData(); // Reload
+                    return;
+                }
+                
+                // Update categories badge
+                document.getElementById('categoriesBadge').textContent = allCategories.length;
+                
+                // Update category dropdown in product form
+                const categorySelect = document.getElementById('productCategory');
+                categorySelect.innerHTML = '<option value="">Select Category</option>' +
+                    allCategories.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+                
+                // Load categories table if on categories page
+                if (document.getElementById('categoriesSection').classList.contains('active')) {
+                    loadCategoriesTable();
+                }
+                
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                showToast('Error loading categories', 'error');
+            }
+        }
+
+        // Create Default Categories
+        async function createDefaultCategories() {
+            const defaultCategories = [
+                { name: 'Premium Fabric', icon: 'fa-tshirt', description: 'High-quality fabrics' },
+                { name: 'Organic Goods', icon: 'fa-leaf', description: 'Natural organic products' },
+                { name: 'Luxury Perfumes', icon: 'fa-spray-can', description: 'Premium fragrances' },
+                { name: 'Artisan Tools', icon: 'fa-tools', description: 'Handcrafted tools' }
             ];
             
-            // Update category dropdown
-            const categorySelect = document.getElementById('productCategory');
-            categorySelect.innerHTML = '<option value="">Select Category</option>' +
-                allCategories.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('');
+            try {
+                const categoriesRef = collection(db, 'categories');
+                for (const category of defaultCategories) {
+                    await addDoc(categoriesRef, {
+                        ...category,
+                        createdAt: serverTimestamp()
+                    });
+                }
+                showToast('Default categories created', 'success');
+            } catch (error) {
+                console.error('Error creating default categories:', error);
+            }
         }
 
         // Load Dashboard Stats
         async function loadDashboardStats() {
-            // Calculate month-over-month changes
-            const currentMonth = new Date().getMonth();
-            const currentYear = new Date().getFullYear();
-            
-            // This would involve more complex date filtering in real implementation
-            // For now, show sample data
-            document.getElementById('ordersSubtext').textContent = `Compared to last month`;
-            document.getElementById('revenueSubtext').textContent = `Compared to last month`;
-            document.getElementById('productsSubtext').textContent = `${allProducts.filter(p => p.stock > 0).length} active`;
-            document.getElementById('customersSubtext').textContent = `From orders`;
+            // Stats are already calculated in loadOrdersData and loadProductsData
+            document.getElementById('ordersSubtext').textContent = `Total orders`;
+            document.getElementById('revenueSubtext').textContent = `All time revenue`;
+            document.getElementById('productsSubtext').textContent = `${allProducts.filter(p => p.stock > 0).length} in stock`;
+            document.getElementById('customersSubtext').textContent = `Unique customers`;
         }
 
         // Load Products Table
@@ -1339,6 +1251,51 @@
             `).join('');
         }
 
+        // Load Categories Table
+        async function loadCategoriesTable() {
+            const tbody = document.getElementById('categoriesTableBody');
+            
+            if (allCategories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">No categories found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = allCategories.map(category => {
+                // Count products in this category
+                const productCount = allProducts.filter(product => 
+                    product.category === category.name
+                ).length;
+                
+                return `
+                    <tr>
+                        <td><small>${category.id.substring(0, 8)}</small></td>
+                        <td>
+                            <i class="fas ${category.icon}" style="font-size: 1.5rem; color: var(--color-secondary);"></i>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">${category.name}</div>
+                        </td>
+                        <td>${category.description || 'No description'}</td>
+                        <td>
+                            <span class="status-badge ${productCount > 0 ? 'status-completed' : 'status-pending'}">
+                                ${productCount} products
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn btn-edit" onclick="editCategory('${category.id}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn btn-delete" onclick="confirmDelete('category', '${category.id}', '${category.name}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
         // Load Recent Orders
         function loadRecentOrders() {
             const tbody = document.getElementById('recentOrdersBody');
@@ -1388,102 +1345,6 @@
                     </tr>
                 `;
             }).join('');
-        }
-
-        // Initialize Revenue Chart
-        function initRevenueChart() {
-            const ctx = document.getElementById('revenueChart').getContext('2d');
-            
-            // Sample data for demo
-            const data = {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Revenue (PKR)',
-                    data: [45000, 52000, 48000, 61000, 72000, 68000, 55000],
-                    backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                    borderColor: 'rgba(212, 175, 55, 1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            };
-            
-            revenueChart = new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `PKR ${context.parsed.y.toLocaleString()}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.1)' },
-                            ticks: {
-                                callback: function(value) {
-                                    return 'PKR ' + value.toLocaleString();
-                                }
-                            }
-                        },
-                        x: {
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Initialize Top Products Chart
-        function initTopProductsChart() {
-            const ctx = document.getElementById('topProductsChart').getContext('2d');
-            
-            // Sample data for demo
-            const data = {
-                labels: ['Silk Fabric', 'Perfume', 'Tools', 'Jewelry', 'Electronics'],
-                datasets: [{
-                    label: 'Units Sold',
-                    data: [45, 38, 32, 28, 22],
-                    backgroundColor: [
-                        'rgba(212, 175, 55, 0.7)',
-                        'rgba(184, 134, 11, 0.7)',
-                        'rgba(243, 156, 18, 0.7)',
-                        'rgba(52, 152, 219, 0.7)',
-                        'rgba(155, 89, 182, 0.7)'
-                    ],
-                    borderColor: 'rgba(255, 255, 255, 0.1)',
-                    borderWidth: 1
-                }]
-            };
-            
-            topProductsChart = new Chart(ctx, {
-                type: 'bar',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        },
-                        x: {
-                            grid: { color: 'rgba(255,255,255,0.1)' }
-                        }
-                    }
-                }
-            });
         }
 
         // View Product
@@ -1548,6 +1409,35 @@
             }
         }
 
+        // Edit Category
+        async function editCategory(categoryId) {
+            try {
+                const category = allCategories.find(c => c.id === categoryId);
+                if (!category) {
+                    showToast('Category not found', 'error');
+                    return;
+                }
+                
+                // Populate form
+                document.getElementById('categoryId').value = category.id;
+                document.getElementById('categoryName').value = category.name || '';
+                document.getElementById('categoryIcon').value = category.icon || '';
+                document.getElementById('categoryDescription').value = category.description || '';
+                document.getElementById('categoryFormTitle').textContent = 'Edit Category';
+                
+                // Show form and switch to categories section
+                switchSection('categories');
+                document.getElementById('categoryFormContainer').classList.remove('hidden');
+                
+                // Scroll to form
+                document.getElementById('categoryFormContainer').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                console.error('Error editing category:', error);
+                showToast('Error loading category details', 'error');
+            }
+        }
+
         // Add New Product
         document.getElementById('addProductBtn').addEventListener('click', () => {
             // Reset form
@@ -1563,9 +1453,28 @@
             document.getElementById('productFormContainer').scrollIntoView({ behavior: 'smooth' });
         });
 
+        // Add New Category
+        document.getElementById('addCategoryBtn').addEventListener('click', () => {
+            // Reset form
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryId').value = '';
+            document.getElementById('categoryFormTitle').textContent = 'Add New Category';
+            
+            // Show form
+            document.getElementById('categoryFormContainer').classList.remove('hidden');
+            
+            // Scroll to form
+            document.getElementById('categoryFormContainer').scrollIntoView({ behavior: 'smooth' });
+        });
+
         // Cancel Product Form
         document.getElementById('cancelProductBtn').addEventListener('click', () => {
             document.getElementById('productFormContainer').classList.add('hidden');
+        });
+
+        // Cancel Category Form
+        document.getElementById('cancelCategoryBtn').addEventListener('click', () => {
+            document.getElementById('categoryFormContainer').classList.add('hidden');
         });
 
         // Save Product
@@ -1620,6 +1529,52 @@
                 showToast('Error saving product: ' + error.message, 'error');
                 document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Save Product';
                 document.getElementById('saveProductBtn').disabled = false;
+            }
+        });
+
+        // Save Category
+        document.getElementById('categoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const categoryId = document.getElementById('categoryId').value;
+            const isEdit = !!categoryId;
+            
+            const categoryData = {
+                name: document.getElementById('categoryName').value,
+                icon: document.getElementById('categoryIcon').value,
+                description: document.getElementById('categoryDescription').value,
+                updatedAt: serverTimestamp()
+            };
+            
+            try {
+                const saveBtn = document.getElementById('saveCategoryBtn');
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                saveBtn.disabled = true;
+                
+                if (isEdit) {
+                    // Update existing category
+                    const categoryRef = doc(db, 'categories', categoryId);
+                    await updateDoc(categoryRef, categoryData);
+                    showToast('Category updated successfully!', 'success');
+                } else {
+                    // Add new category
+                    categoryData.createdAt = serverTimestamp();
+                    await addDoc(collection(db, 'categories'), categoryData);
+                    showToast('Category added successfully!', 'success');
+                }
+                
+                // Hide form and reload data
+                document.getElementById('categoryFormContainer').classList.add('hidden');
+                await loadCategoriesData();
+                
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Category';
+                saveBtn.disabled = false;
+                
+            } catch (error) {
+                console.error('Error saving category:', error);
+                showToast('Error saving category: ' + error.message, 'error');
+                document.getElementById('saveCategoryBtn').innerHTML = '<i class="fas fa-save"></i> Save Category';
+                document.getElementById('saveCategoryBtn').disabled = false;
             }
         });
 
@@ -1763,6 +1718,23 @@
                     await deleteDoc(doc(db, 'orders', id));
                     showToast('Order deleted successfully', 'success');
                     await loadOrdersData();
+                } else if (type === 'category') {
+                    // Check if category has products
+                    const productsInCategory = allProducts.filter(product => {
+                        const category = allCategories.find(c => c.id === id);
+                        return category && product.category === category.name;
+                    });
+                    
+                    if (productsInCategory.length > 0) {
+                        showToast('Cannot delete category with existing products', 'error');
+                        closeModal('confirmModal');
+                        pendingAction = null;
+                        return;
+                    }
+                    
+                    await deleteDoc(doc(db, 'categories', id));
+                    showToast('Category deleted successfully', 'success');
+                    await loadCategoriesData();
                 }
                 
                 closeModal('confirmModal');
@@ -1775,50 +1747,12 @@
         });
 
         // Export Functions
-        window.exportToExcel = function() {
-            // Using XLSX library
-            const ws = XLSX.utils.json_to_sheet(allOrders);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Orders");
-            XLSX.writeFile(wb, `hinayaluxe-orders-${new Date().toISOString().split('T')[0]}.xlsx`);
-            showToast('Excel file downloaded', 'success');
-        };
-
-        window.exportToCSV = function() {
-            const csvContent = "data:text/csv;charset=utf-8," 
-                + allOrders.map(order => 
-                    `${order.id},${order.customerName},${order.productTitle},${order.quantity},${order.totalAmount},${order.status},${order.createdAt}`
-                ).join("\n");
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `hinayaluxe-orders-${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('CSV file downloaded', 'success');
-        };
-
-        window.exportToJSON = function() {
-            const dataStr = JSON.stringify(allOrders, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const link = document.createElement("a");
-            link.setAttribute("href", dataUri);
-            link.setAttribute("download", `hinayaluxe-orders-${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('JSON file downloaded', 'success');
-        };
-
-        window.exportToPDF = function() {
-            // In a real app, you would use a PDF generation library
-            showToast('PDF generation would require additional libraries', 'info');
-        };
-
         window.exportProducts = function() {
+            if (allProducts.length === 0) {
+                showToast('No products to export', 'error');
+                return;
+            }
+            
             const ws = XLSX.utils.json_to_sheet(allProducts);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Products");
@@ -1827,6 +1761,11 @@
         };
 
         window.exportOrders = function() {
+            if (allOrders.length === 0) {
+                showToast('No orders to export', 'error');
+                return;
+            }
+            
             const ws = XLSX.utils.json_to_sheet(allOrders);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Orders");
@@ -1834,36 +1773,16 @@
             showToast('Orders exported to Excel', 'success');
         };
 
-        window.exportAnalytics = function() {
-            const analyticsData = {
-                summary: {
-                    totalOrders: allOrders.length,
-                    totalRevenue: allOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0),
-                    totalProducts: allProducts.length,
-                    averageOrderValue: allOrders.length > 0 ? 
-                        allOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0) / allOrders.length : 0
-                },
-                orders: allOrders,
-                products: allProducts
-            };
-            
-            const dataStr = JSON.stringify(analyticsData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const link = document.createElement("a");
-            link.setAttribute("href", dataUri);
-            link.setAttribute("download", `hinayaluxe-analytics-${new Date().toISOString().split('T')[0]}.json`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('Analytics data exported', 'success');
-        };
-
         // Navigation
         function switchSection(sectionId) {
             // Hide all sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
+            });
+            
+            // Hide all form containers
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.add('hidden');
             });
             
             // Remove active class from all nav items
@@ -1886,8 +1805,8 @@
                 loadProductsTable();
             } else if (sectionId === 'orders') {
                 loadOrdersTable();
-            } else if (sectionId === 'analytics') {
-                initAnalyticsCharts();
+            } else if (sectionId === 'categories') {
+                loadCategoriesTable();
             }
         }
 
@@ -1898,190 +1817,66 @@
                 'products': 'Product Management',
                 'orders': 'Order Management',
                 'categories': 'Category Management',
-                'analytics': 'Advanced Analytics',
                 'customers': 'Customer Management',
                 'inventory': 'Inventory Management',
-                'reports': 'Reports & Exports',
                 'settings': 'Settings'
             };
             return titles[sectionId] || 'Admin Panel';
         }
 
-        // Initialize Analytics Charts
-        function initAnalyticsCharts() {
-            // Monthly Revenue Chart
-            const monthlyCtx = document.getElementById('monthlyRevenueChart').getContext('2d');
-            monthlyRevenueChart = new Chart(monthlyCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'Monthly Revenue',
-                        data: [120000, 145000, 98000, 165000, 210000, 185000, 230000, 195000, 175000, 220000, 245000, 280000],
-                        borderColor: 'rgba(212, 175, 55, 1)',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: value => 'PKR ' + value.toLocaleString()
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Product Performance Chart
-            const performanceCtx = document.getElementById('productPerformanceChart').getContext('2d');
-            productPerformanceChart = new Chart(performanceCtx, {
-                type: 'radar',
-                data: {
-                    labels: ['Sales', 'Revenue', 'Profit', 'Returns', 'Rating', 'Popularity'],
-                    datasets: [{
-                        label: 'Silk Fabric',
-                        data: [85, 90, 80, 95, 88, 92],
-                        backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                        borderColor: 'rgba(212, 175, 55, 1)'
-                    }, {
-                        label: 'Perfume',
-                        data: [70, 75, 65, 80, 85, 78],
-                        backgroundColor: 'rgba(184, 134, 11, 0.2)',
-                        borderColor: 'rgba(184, 134, 11, 1)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 100
-                        }
-                    }
-                }
-            });
-
-            // Category Distribution Chart
-            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-            categoryChart = new Chart(categoryCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Fabric', 'Perfumes', 'Tools', 'Jewelry', 'Electronics', 'Organic'],
-                    datasets: [{
-                        data: [30, 25, 15, 12, 10, 8],
-                        backgroundColor: [
-                            'rgba(212, 175, 55, 0.8)',
-                            'rgba(184, 134, 11, 0.8)',
-                            'rgba(243, 156, 18, 0.8)',
-                            'rgba(52, 152, 219, 0.8)',
-                            'rgba(155, 89, 182, 0.8)',
-                            'rgba(39, 174, 96, 0.8)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
-                    }
-                }
-            });
-
-            // Order Status Chart
-            const statusCtx = document.getElementById('orderStatusChart').getContext('2d');
-            orderStatusChart = new Chart(statusCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Completed', 'Processing', 'Pending', 'Cancelled'],
-                    datasets: [{
-                        data: [60, 20, 15, 5],
-                        backgroundColor: [
-                            'rgba(39, 174, 96, 0.8)',
-                            'rgba(52, 152, 219, 0.8)',
-                            'rgba(243, 156, 18, 0.8)',
-                            'rgba(231, 76, 60, 0.8)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'right'
-                        }
-                    }
-                }
-            });
-
-            // Load top products table
-            loadTopProductsTable();
+        // Load Orders Table with Filter
+        function loadOrdersTable(filter = 'all') {
+            const filteredOrders = filter === 'all' 
+                ? allOrders 
+                : allOrders.filter(order => order.status === filter);
+            
+            const tbody = document.getElementById('ordersTableBody');
+            
+            if (filteredOrders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8">No ${filter} orders found</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = filteredOrders.map(order => {
+                const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+                return `
+                    <tr>
+                        <td><small>${order.id.substring(0, 8)}</small></td>
+                        <td>
+                            <div style="font-weight: 600;">${order.customerName || 'N/A'}</div>
+                            <small style="color: var(--color-gray);">${order.customerPhone || ''}</small>
+                        </td>
+                        <td>${order.productTitle || 'N/A'}</td>
+                        <td>${order.quantity || 1}</td>
+                        <td style="font-weight: 700; color: var(--color-secondary);">
+                            PKR ${(order.totalAmount || 0).toLocaleString()}
+                        </td>
+                        <td>
+                            <span class="status-badge status-${order.status || 'pending'}">
+                                ${order.status || 'pending'}
+                            </span>
+                        </td>
+                        <td>${date}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn btn-view" onclick="viewOrder('${order.id}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <select style="padding: 6px 10px; background: var(--color-primary); 
+                                         border: 1px solid var(--color-border); border-radius: 6px; 
+                                         color: var(--color-dark); font-size: 0.9rem;"
+                                        onchange="updateOrderStatus('${order.id}', this.value)">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
-
-        // Load Top Products Table
-        function loadTopProductsTable() {
-            // Calculate top products
-            const productSales = {};
-            allOrders.forEach(order => {
-                if (!productSales[order.productTitle]) {
-                    productSales[order.productTitle] = {
-                        orders: 0,
-                        revenue: 0,
-                        rating: 4.5 // Default rating
-                    };
-                }
-                productSales[order.productTitle].orders += order.quantity || 1;
-                productSales[order.productTitle].revenue += order.totalAmount || 0;
-            });
-
-            // Convert to array and sort
-            const topProducts = Object.entries(productSales)
-                .map(([name, data]) => ({
-                    name,
-                    ...data
-                }))
-                .sort((a, b) => b.orders - a.orders)
-                .slice(0, 10);
-
-            // Update table
-            const tbody = document.getElementById('topProductsBody');
-            tbody.innerHTML = topProducts.map((product, index) => `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td style="font-weight: 600;">${product.name}</td>
-                    <td>${allProducts.find(p => p.title === product.name)?.category || 'N/A'}</td>
-                    <td>${product.orders}</td>
-                    <td style="color: var(--color-secondary); font-weight: 700;">
-                        PKR ${product.revenue.toLocaleString()}
-                    </td>
-                    <td>
-                        <span style="color: var(--color-warning);">
-                            <i class="fas fa-star"></i> ${product.rating.toFixed(1)}
-                        </span>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Refresh Analytics
-        window.refreshAnalytics = async function() {
-            showToast('Refreshing analytics data...', 'info');
-            await loadOrdersData();
-            await loadProductsData();
-            loadTopProductsTable();
-            showToast('Analytics data refreshed', 'success');
-        };
 
         // Modal Functions
         function showModal(title, content) {
@@ -2175,6 +1970,8 @@
                 searchProducts(term);
             } else if (currentSection === 'ordersSection') {
                 searchOrders(term);
+            } else if (currentSection === 'categoriesSection') {
+                searchCategories(term);
             }
         }
 
@@ -2297,53 +2094,49 @@
             }).join('');
         }
 
-        // Load Orders Table with Filter
-        function loadOrdersTable(filter = 'all') {
-            const filteredOrders = filter === 'all' 
-                ? allOrders 
-                : allOrders.filter(order => order.status === filter);
+        // Search Categories
+        function searchCategories(term) {
+            const filtered = allCategories.filter(category =>
+                category.name.toLowerCase().includes(term) ||
+                category.description?.toLowerCase().includes(term)
+            );
             
-            const tbody = document.getElementById('ordersTableBody');
+            const tbody = document.getElementById('categoriesTableBody');
             
-            if (filteredOrders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8">No ${filter} orders found</td></tr>`;
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6">No categories found for "${term}"</td></tr>`;
                 return;
             }
             
-            tbody.innerHTML = filteredOrders.map(order => {
-                const date = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+            tbody.innerHTML = filtered.map(category => {
+                // Count products in this category
+                const productCount = allProducts.filter(product => 
+                    product.category === category.name
+                ).length;
+                
                 return `
                     <tr>
-                        <td><small>${order.id.substring(0, 8)}</small></td>
+                        <td><small>${category.id.substring(0, 8)}</small></td>
                         <td>
-                            <div style="font-weight: 600;">${order.customerName || 'N/A'}</div>
-                            <small style="color: var(--color-gray);">${order.customerPhone || ''}</small>
-                        </td>
-                        <td>${order.productTitle || 'N/A'}</td>
-                        <td>${order.quantity || 1}</td>
-                        <td style="font-weight: 700; color: var(--color-secondary);">
-                            PKR ${(order.totalAmount || 0).toLocaleString()}
+                            <i class="fas ${category.icon}" style="font-size: 1.5rem; color: var(--color-secondary);"></i>
                         </td>
                         <td>
-                            <span class="status-badge status-${order.status || 'pending'}">
-                                ${order.status || 'pending'}
+                            <div style="font-weight: 600;">${category.name}</div>
+                        </td>
+                        <td>${category.description || 'No description'}</td>
+                        <td>
+                            <span class="status-badge ${productCount > 0 ? 'status-completed' : 'status-pending'}">
+                                ${productCount} products
                             </span>
                         </td>
-                        <td>${date}</td>
                         <td>
                             <div class="action-buttons">
-                                <button class="action-btn btn-view" onclick="viewOrder('${order.id}')">
-                                    <i class="fas fa-eye"></i>
+                                <button class="action-btn btn-edit" onclick="editCategory('${category.id}')">
+                                    <i class="fas fa-edit"></i>
                                 </button>
-                                <select style="padding: 6px 10px; background: var(--color-primary); 
-                                         border: 1px solid var(--color-border); border-radius: 6px; 
-                                         color: var(--color-dark); font-size: 0.9rem;"
-                                        onchange="updateOrderStatus('${order.id}', this.value)">
-                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
-                                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
-                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                                </select>
+                                <button class="action-btn btn-delete" onclick="confirmDelete('category', '${category.id}', '${category.name}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -2388,3 +2181,4 @@
     </script>
 </body>
 </html>
+[file content end]
