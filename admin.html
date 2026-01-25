@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HinayaLUXE Admin</title>
-    <!-- Firebase SDK v9 -->
+    <!-- Firebase SDK v9 - NO STORAGE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
         import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
-        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js';
         
         const firebaseConfig = {
             apiKey: "AIzaSyBpGMx8E7c83_uMjwpS8MkIay_gxKGQrCo",
@@ -24,16 +23,11 @@
         window.firebaseApp = initializeApp(firebaseConfig);
         window.db = getFirestore(firebaseApp);
         window.auth = getAuth(firebaseApp);
-        window.storage = getStorage(firebaseApp);
         
         // Make Firebase functions available
         window.signInWithEmailAndPassword = signInWithEmailAndPassword;
         window.signOut = signOut;
         window.onAuthStateChanged = onAuthStateChanged;
-        window.ref = ref;
-        window.uploadBytes = uploadBytes;
-        window.getDownloadURL = getDownloadURL;
-        window.deleteObject = deleteObject;
         
         console.log('Firebase Admin loaded');
     </script>
@@ -1348,7 +1342,7 @@
                     <div class="image-upload-area" id="imageUploadArea">
                         <i class="fas fa-cloud-upload-alt"></i>
                         <div class="image-upload-text">Tap to upload images</div>
-                        <div class="image-upload-subtext">Upload up to 5 images (Max 2MB each)</div>
+                        <div class="image-upload-subtext">Upload up to 5 images (Max 500KB each)</div>
                         <input type="file" id="imageUploadInput" multiple accept="image/*" style="display: none;">
                     </div>
                     
@@ -1483,11 +1477,11 @@
         let currentAdmin = null;
         let allProducts = [];
         let allOrders = [];
-        let currentProductImages = []; // For preview
+        let currentProductImages = [];
         let currentImageIndex = 0;
         let pendingAction = null;
-        let uploadedFiles = []; // Store actual File objects for upload
-        let existingImageUrls = []; // Store existing image URLs
+        let uploadedFiles = []; // Store files for conversion
+        let existingImages = []; // Store existing base64 images
 
         // DOM Elements
         const loginPage = document.getElementById('loginPage');
@@ -1513,7 +1507,7 @@
             // Setup event listeners
             setupEventListeners();
             
-            // Check for desktop view - FIXED with null check
+            // Check for desktop view
             setTimeout(() => {
                 checkDesktopView();
             }, 100);
@@ -1522,7 +1516,7 @@
             window.addEventListener('resize', checkDesktopView);
         });
 
-        // Check if desktop view - FIXED
+        // Check if desktop view
         function checkDesktopView() {
             const desktopSidebar = document.querySelector('.desktop-sidebar');
             const mobileHeader = document.querySelector('.mobile-header');
@@ -1780,12 +1774,19 @@
         }
 
         // Get safe image URL
-        function getSafeImageUrl(imageUrl) {
-            if (imageUrl && (imageUrl.startsWith('http') || imageUrl.startsWith('https'))) {
-                return imageUrl;
+        function getSafeImageUrl(imageData) {
+            if (!imageData) {
+                return `https://placehold.co/400x300/222/fff?text=HinayaLUXE&font=inter`;
             }
-            // Use a reliable placeholder
-            return `https://placehold.co/400x300/222/fff?text=Product&font=inter`;
+            
+            // Check if it's base64 or URL
+            if (imageData.startsWith('data:image')) {
+                return imageData; // Base64 image
+            } else if (imageData.startsWith('http')) {
+                return imageData; // External URL
+            } else {
+                return `https://placehold.co/400x300/222/fff?text=HinayaLUXE&font=inter`;
+            }
         }
 
         // Load Orders Data
@@ -1837,33 +1838,39 @@
             
             productsEmpty.classList.add('hidden');
             
-            productsGrid.innerHTML = allProducts.map(product => `
-                <div class="product-card" data-id="${product.id}">
-                    <div class="product-image">
-                        <img src="${getSafeImageUrl(product.images[0])}" 
-                             alt="${product.title}"
-                             loading="lazy"
-                             onerror="this.onerror=null; this.src='${getSafeImageUrl('')}'">
-                    </div>
-                    <div class="product-content">
-                        <div class="product-category">${product.category}</div>
-                        <h3 class="product-title">${product.title}</h3>
-                        <div class="product-price">PKR ${product.price.toLocaleString()}</div>
-                        <div class="product-stock">
-                            <i class="fas fa-box"></i>
-                            ${product.stock} in stock
+            productsGrid.innerHTML = allProducts.map(product => {
+                const firstImage = product.images && product.images.length > 0 ? 
+                    getSafeImageUrl(product.images[0]) : 
+                    getSafeImageUrl(null);
+                
+                return `
+                    <div class="product-card" data-id="${product.id}">
+                        <div class="product-image">
+                            <img src="${firstImage}" 
+                                 alt="${product.title}"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='${getSafeImageUrl(null)}'">
                         </div>
-                        <div class="product-actions">
-                            <button class="action-btn action-btn-edit" onclick="viewProduct('${product.id}')">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="action-btn action-btn-delete" onclick="confirmDelete('product', '${product.id}', '${product.title}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
+                        <div class="product-content">
+                            <div class="product-category">${product.category}</div>
+                            <h3 class="product-title">${product.title}</h3>
+                            <div class="product-price">PKR ${product.price.toLocaleString()}</div>
+                            <div class="product-stock">
+                                <i class="fas fa-box"></i>
+                                ${product.stock} in stock
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn action-btn-edit" onclick="viewProduct('${product.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="action-btn action-btn-delete" onclick="confirmDelete('product', '${product.id}', '${product.title}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Load Orders List
@@ -1912,9 +1919,8 @@
         // Open Product Modal
         function openProductModal(productId = null) {
             // Reset image arrays
-            currentProductImages = [];
             uploadedFiles = [];
-            existingImageUrls = [];
+            existingImages = [];
             
             if (productId) {
                 // Edit mode
@@ -1930,10 +1936,10 @@
                     document.getElementById('productRating').value = product.rating || 4.5;
                     document.getElementById('productStatus').value = product.status || 'active';
                     
-                    // Store existing image URLs
-                    existingImageUrls = product.images || [];
+                    // Store existing images
+                    existingImages = product.images || [];
                     // Load images for preview
-                    loadProductImages(existingImageUrls);
+                    loadProductImages(existingImages);
                 }
             } else {
                 // Add mode
@@ -1950,29 +1956,44 @@
         function closeProductModal() {
             closeModal('productModal');
             // Clean up blob URLs
-            currentProductImages.forEach(url => {
-                if (url.startsWith('blob:')) {
-                    URL.revokeObjectURL(url);
+            uploadedFiles.forEach(file => {
+                if (file.previewUrl && file.previewUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(file.previewUrl);
                 }
             });
+            uploadedFiles = [];
+            existingImages = [];
         }
 
         // Load Product Images for preview
-        function loadProductImages(imageUrls) {
+        function loadProductImages(imageDataArray) {
             const previewGrid = document.getElementById('imagePreviewGrid');
             previewGrid.innerHTML = '';
-            currentProductImages = [...imageUrls];
             
-            imageUrls.forEach((imageUrl, index) => {
+            // Clear previous uploads
+            uploadedFiles.forEach(file => {
+                if (file.previewUrl && file.previewUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(file.previewUrl);
+                }
+            });
+            uploadedFiles = [];
+            
+            // Add existing images
+            imageDataArray.forEach((imageData, index) => {
+                const imageUrl = getSafeImageUrl(imageData);
+                
                 previewGrid.innerHTML += `
                     <div class="image-preview">
-                        <img src="${getSafeImageUrl(imageUrl)}" alt="Product Image">
-                        <div class="image-remove" onclick="removeImage(${index})">
+                        <img src="${imageUrl}" alt="Product Image">
+                        <div class="image-remove" onclick="removeImage(${index}, true)">
                             <i class="fas fa-times"></i>
                         </div>
                     </div>
                 `;
             });
+            
+            // Store existing images
+            existingImages = [...imageDataArray];
         }
 
         // Handle Image Upload
@@ -1981,7 +2002,7 @@
             const previewGrid = document.getElementById('imagePreviewGrid');
             const maxImages = 5;
             
-            if (currentProductImages.length + files.length > maxImages) {
+            if (existingImages.length + files.length > maxImages) {
                 showToast(`Maximum ${maxImages} images allowed`, 'error');
                 return;
             }
@@ -1994,20 +2015,23 @@
                     continue;
                 }
                 
-                if (file.size > 2 * 1024 * 1024) {
-                    showToast('Image size should be less than 2MB', 'error');
+                if (file.size > 500 * 1024) { // 500KB limit
+                    showToast('Image size should be less than 500KB', 'error');
                     continue;
                 }
                 
-                const imageUrl = URL.createObjectURL(file);
-                currentProductImages.push(imageUrl);
-                uploadedFiles.push(file);
+                // Create object URL for preview
+                const previewUrl = URL.createObjectURL(file);
+                uploadedFiles.push({
+                    file: file,
+                    previewUrl: previewUrl
+                });
                 
-                const imageIndex = currentProductImages.length - 1;
+                const imageIndex = existingImages.length + uploadedFiles.length - 1;
                 previewGrid.innerHTML += `
                     <div class="image-preview">
-                        <img src="${imageUrl}" alt="Uploaded Image">
-                        <div class="image-remove" onclick="removeImage(${imageIndex})">
+                        <img src="${previewUrl}" alt="Uploaded Image">
+                        <div class="image-remove" onclick="removeImage(${imageIndex}, false)">
                             <i class="fas fa-times"></i>
                         </div>
                     </div>
@@ -2017,52 +2041,110 @@
             e.target.value = '';
         }
 
+        // Convert image file to Base64
+        function imageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Compress image
+        function compressImage(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Set maximum dimensions
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        // Convert to base64 with quality compression
+                        const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(base64);
+                    };
+                };
+            });
+        }
+
         // Remove Image
-        window.removeImage = function(index) {
-            // If it's a blob URL, revoke it
-            if (currentProductImages[index].startsWith('blob:')) {
-                URL.revokeObjectURL(currentProductImages[index]);
-                // Remove from uploaded files
-                const blobIndex = currentProductImages.findIndex((url, i) => 
-                    i === index && url.startsWith('blob:')
-                );
-                if (blobIndex > -1) {
-                    uploadedFiles.splice(blobIndex, 1);
-                }
-            } else {
+        window.removeImage = function(index, isExisting) {
+            if (isExisting) {
                 // Remove from existing images
-                const existingIndex = existingImageUrls.indexOf(currentProductImages[index]);
-                if (existingIndex > -1) {
-                    existingImageUrls.splice(existingIndex, 1);
+                existingImages.splice(index, 1);
+                loadProductImages(existingImages);
+            } else {
+                // Remove from uploaded files
+                const uploadedIndex = index - existingImages.length;
+                if (uploadedIndex >= 0 && uploadedIndex < uploadedFiles.length) {
+                    // Revoke blob URL
+                    if (uploadedFiles[uploadedIndex].previewUrl.startsWith('blob:')) {
+                        URL.revokeObjectURL(uploadedFiles[uploadedIndex].previewUrl);
+                    }
+                    uploadedFiles.splice(uploadedIndex, 1);
+                    
+                    // Reload previews
+                    const previewGrid = document.getElementById('imagePreviewGrid');
+                    previewGrid.innerHTML = '';
+                    
+                    // Add existing images
+                    existingImages.forEach((imageData, idx) => {
+                        const imageUrl = getSafeImageUrl(imageData);
+                        previewGrid.innerHTML += `
+                            <div class="image-preview">
+                                <img src="${imageUrl}" alt="Product Image">
+                                <div class="image-remove" onclick="removeImage(${idx}, true)">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    // Add remaining uploaded files
+                    uploadedFiles.forEach((file, idx) => {
+                        const newIndex = existingImages.length + idx;
+                        previewGrid.innerHTML += `
+                            <div class="image-preview">
+                                <img src="${file.previewUrl}" alt="Uploaded Image">
+                                <div class="image-remove" onclick="removeImage(${newIndex}, false)">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                        `;
+                    });
                 }
             }
-            
-            currentProductImages.splice(index, 1);
-            loadProductImages(currentProductImages);
             showToast('Image removed', 'info');
         };
 
-        // Upload image to Firebase Storage
-        async function uploadImageToStorage(file) {
-            try {
-                const timestamp = Date.now();
-                const randomString = Math.random().toString(36).substring(2, 15);
-                const fileName = `product_${timestamp}_${randomString}_${file.name}`;
-                const storageRef = ref(storage, `products/${fileName}`);
-                
-                // Upload the file
-                await uploadBytes(storageRef, file);
-                
-                // Get the download URL
-                const downloadURL = await getDownloadURL(storageRef);
-                return downloadURL;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                throw error;
-            }
-        }
-
-        // Handle Product Save - WITH FIREBASE STORAGE UPLOAD
+        // Handle Product Save
         async function handleProductSave(e) {
             e.preventDefault();
             
@@ -2074,19 +2156,30 @@
                 saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
                 saveBtn.disabled = true;
                 
-                // Upload new images to Firebase Storage
-                const uploadedImageUrls = [];
-                for (const file of uploadedFiles) {
+                // Convert uploaded images to Base64 (compressed)
+                const uploadedBase64Images = [];
+                for (const fileData of uploadedFiles) {
                     try {
-                        const imageUrl = await uploadImageToStorage(file);
-                        uploadedImageUrls.push(imageUrl);
-                    } catch (uploadError) {
-                        console.error('Failed to upload image:', uploadError);
+                        const base64 = await compressImage(fileData.file);
+                        uploadedBase64Images.push(base64);
+                        // Revoke the blob URL
+                        if (fileData.previewUrl.startsWith('blob:')) {
+                            URL.revokeObjectURL(fileData.previewUrl);
+                        }
+                    } catch (error) {
+                        console.error('Failed to convert image:', error);
+                        // Fallback to regular conversion
+                        try {
+                            const base64 = await imageToBase64(fileData.file);
+                            uploadedBase64Images.push(base64);
+                        } catch (fallbackError) {
+                            console.error('Fallback conversion failed:', fallbackError);
+                        }
                     }
                 }
                 
                 // Combine existing images with newly uploaded ones
-                const allImageUrls = [...existingImageUrls, ...uploadedImageUrls];
+                const allImages = [...existingImages, ...uploadedBase64Images];
                 
                 const productData = {
                     title: document.getElementById('productTitle').value,
@@ -2096,7 +2189,7 @@
                     description: document.getElementById('productDescription').value,
                     rating: parseFloat(document.getElementById('productRating').value),
                     status: document.getElementById('productStatus').value,
-                    images: allImageUrls,
+                    images: allImages,
                     updatedAt: serverTimestamp()
                 };
                 
@@ -2121,6 +2214,9 @@
             } finally {
                 document.getElementById('saveProductBtn').innerHTML = '<i class="fas fa-save"></i> Save';
                 document.getElementById('saveProductBtn').disabled = false;
+                // Clear uploaded files
+                uploadedFiles = [];
+                existingImages = [];
             }
         }
 
@@ -2171,7 +2267,7 @@
             const thumbnailGrid = document.getElementById('thumbnailGrid');
             
             if (images.length === 0) {
-                images = [getSafeImageUrl('')];
+                images = [getSafeImageUrl(null)];
             }
             
             currentProductImages = images;
@@ -2332,9 +2428,6 @@
                     // Delete product from Firestore
                     await deleteDoc(doc(db, 'products', id));
                     
-                    // You could also delete images from storage here if needed
-                    // For now, we'll just delete the document
-                    
                     showToast('Product deleted successfully', 'success');
                     await loadProductsData();
                     loadProductsGrid();
@@ -2396,33 +2489,39 @@
             
             productsEmpty.classList.add('hidden');
             
-            productsGrid.innerHTML = filtered.map(product => `
-                <div class="product-card" data-id="${product.id}">
-                    <div class="product-image">
-                        <img src="${getSafeImageUrl(product.images[0])}" 
-                             alt="${product.title}"
-                             loading="lazy"
-                             onerror="this.onerror=null; this.src='${getSafeImageUrl('')}'">
-                    </div>
-                    <div class="product-content">
-                        <div class="product-category">${product.category}</div>
-                        <h3 class="product-title">${product.title}</h3>
-                        <div class="product-price">PKR ${product.price.toLocaleString()}</div>
-                        <div class="product-stock">
-                            <i class="fas fa-box"></i>
-                            ${product.stock} in stock
+            productsGrid.innerHTML = filtered.map(product => {
+                const firstImage = product.images && product.images.length > 0 ? 
+                    getSafeImageUrl(product.images[0]) : 
+                    getSafeImageUrl(null);
+                
+                return `
+                    <div class="product-card" data-id="${product.id}">
+                        <div class="product-image">
+                            <img src="${firstImage}" 
+                                 alt="${product.title}"
+                                 loading="lazy"
+                                 onerror="this.onerror=null; this.src='${getSafeImageUrl(null)}'">
                         </div>
-                        <div class="product-actions">
-                            <button class="action-btn action-btn-edit" onclick="viewProduct('${product.id}')">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="action-btn action-btn-delete" onclick="confirmDelete('product', '${product.id}', '${product.title}')">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
+                        <div class="product-content">
+                            <div class="product-category">${product.category}</div>
+                            <h3 class="product-title">${product.title}</h3>
+                            <div class="product-price">PKR ${product.price.toLocaleString()}</div>
+                            <div class="product-stock">
+                                <i class="fas fa-box"></i>
+                                ${product.stock} in stock
+                            </div>
+                            <div class="product-actions">
+                                <button class="action-btn action-btn-edit" onclick="viewProduct('${product.id}')">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                                <button class="action-btn action-btn-delete" onclick="confirmDelete('product', '${product.id}', '${product.title}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Search Orders
@@ -2484,7 +2583,13 @@
             }
             
             try {
-                const ws = XLSX.utils.json_to_sheet(allProducts);
+                // Remove base64 images to reduce file size
+                const exportProducts = allProducts.map(product => ({
+                    ...product,
+                    images: product.images ? ['[Base64 Image Data]'] : []
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(exportProducts);
                 const wb = XLSX.utils.book_new();
                 XLSX.utils.book_append_sheet(wb, ws, "Products");
                 XLSX.writeFile(wb, `hinayaluxe-products-${new Date().toISOString().split('T')[0]}.xlsx`);
