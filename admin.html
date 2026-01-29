@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HinayaLUXE Admin</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
     <!-- Firebase SDK v9 - NO STORAGE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
@@ -185,6 +187,46 @@
             display: flex; 
             align-items: center; 
             gap: 6px;
+        }
+
+        /* ===== WHATSAPP BUTTON STYLES ===== */
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:active {
+            background: #128C7E;
+            transform: scale(0.98);
+        }
+        
+        .btn-bank {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+        }
+        
+        .bank-details {
+            background: rgba(139, 69, 19, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+        
+        .bank-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .bank-detail-row .label {
+            color: var(--color-gray);
+            font-weight: 600;
+        }
+        
+        .bank-detail-row .value {
+            color: var(--color-secondary);
+            font-weight: 600;
         }
 
         /* ===== ADMIN DASHBOARD LAYOUT - MOBILE FIRST ===== */
@@ -748,7 +790,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             display: none;
             justify-content: center;
             align-items: center;
@@ -769,6 +811,7 @@
             max-height: 90vh;
             overflow-y: auto;
             border: 1px solid var(--color-border);
+            position: relative;
         }
         .modal-header {
             display: flex;
@@ -781,6 +824,9 @@
             font-weight: 600;
         }
         .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -789,8 +835,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             cursor: pointer;
+            border: 1px solid var(--color-border);
+            z-index: 10;
+        }
+        .modal-close:active {
+            background: var(--color-secondary);
+            color: var(--color-primary);
+            transform: rotate(90deg);
         }
         .modal-footer {
             display: flex;
@@ -1298,9 +1351,9 @@
     <!-- Product Form Modal -->
     <div class="modal-overlay" id="productModal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeProductModal()">&times;</button>
             <div class="modal-header">
                 <div class="modal-title" id="productModalTitle">Add Product</div>
-                <div class="modal-close" onclick="closeProductModal()">&times;</div>
             </div>
             
             <form id="productForm">
@@ -1374,9 +1427,9 @@
     <!-- Product View Modal -->
     <div class="modal-overlay" id="productViewModal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeProductViewModal()">&times;</button>
             <div class="modal-header">
                 <div class="modal-title" id="productViewTitle"></div>
-                <div class="modal-close" onclick="closeProductViewModal()">&times;</div>
             </div>
             
             <div class="image-gallery mb-20">
@@ -1425,9 +1478,9 @@
     <!-- Order View Modal -->
     <div class="modal-overlay" id="orderModal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeOrderModal()">&times;</button>
             <div class="modal-header">
                 <div class="modal-title">Order Details</div>
-                <div class="modal-close" onclick="closeOrderModal()">&times;</div>
             </div>
             
             <div id="orderModalContent">
@@ -1445,9 +1498,9 @@
     <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirmModal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('confirmModal')">&times;</button>
             <div class="modal-header">
                 <div class="modal-title" id="confirmTitle">Confirm</div>
-                <div class="modal-close" onclick="closeModal('confirmModal')">&times;</div>
             </div>
             <div style="margin: 20px 0;">
                 <p id="confirmMessage">Are you sure you want to perform this action?</p>
