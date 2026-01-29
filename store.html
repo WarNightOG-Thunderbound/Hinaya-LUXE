@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HinayaLUXE | Luxury Redefined</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logo.png">
     <!-- Firebase SDK v9 - NO STORAGE -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
@@ -82,6 +84,61 @@
             padding: 0 15px; 
         }
         .hidden { display: none !important; }
+
+        /* ===== WHATSAPP & BANK BUTTON STYLES ===== */
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .btn-whatsapp:active {
+            background: #128C7E;
+            transform: scale(0.98);
+        }
+        
+        .btn-bank {
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+        }
+        
+        .btn-bank:active {
+            background: linear-gradient(135deg, #654321, #8B4513);
+            transform: scale(0.98);
+        }
+        
+        .bank-details {
+            background: rgba(139, 69, 19, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 1px solid rgba(139, 69, 19, 0.3);
+        }
+        
+        .bank-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .bank-detail-row .label {
+            color: var(--color-gray);
+            font-weight: 600;
+        }
+        
+        .bank-detail-row .value {
+            color: var(--color-secondary);
+            font-weight: 600;
+        }
+        
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .payment-options .btn {
+            flex: 1;
+        }
 
         /* ===== LOADING OVERLAY ===== */
         #loadingOverlay {
@@ -517,6 +574,7 @@
             overflow-y: auto;
             border: 1px solid var(--color-border);
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(50px); }
@@ -534,9 +592,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             z-index: 10;
             cursor: pointer;
+            border: 1px solid var(--color-border);
         }
         .modal-close:active {
             background: var(--color-secondary);
@@ -840,6 +899,16 @@
             color: var(--color-primary);
             transform: translateY(-2px);
         }
+        
+        .whatsapp-link {
+            background: #25D366;
+            color: white;
+        }
+        
+        .whatsapp-link:active {
+            background: #128C7E;
+        }
+        
         .footer-bottom {
             text-align: center;
             padding-top: 20px;
@@ -1086,6 +1155,9 @@
                         <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
                         <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="https://wa.me/923344148636" class="social-link whatsapp-link" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-col">
@@ -1103,6 +1175,11 @@
                         <li><i class="fas fa-envelope"></i> contact@hinayaluxe.com</li>
                         <li><i class="fas fa-phone"></i> +92 334 4148636</li>
                         <li><i class="fas fa-map-marker-alt"></i> Lahore, Pakistan</li>
+                        <li>
+                            <a href="https://wa.me/923344148636" target="_blank" class="whatsapp-link" style="padding: 8px 12px; border-radius: 8px; display: inline-block; margin-top: 5px;">
+                                <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -1194,8 +1271,39 @@
                         </div>
                     </div>
                     
+                    <!-- Payment Options -->
+                    <div class="payment-options mb-20">
+                        <button type="button" class="btn btn-whatsapp" onclick="openWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button type="button" class="btn btn-bank" onclick="showBankDetails()">
+                            <i class="fas fa-university"></i> Account Details
+                        </button>
+                    </div>
+                    
+                    <!-- Bank Details (Hidden by default) -->
+                    <div class="bank-details hidden" id="bankDetails">
+                        <h4 style="margin-bottom: 15px; color: var(--color-secondary);">Bank Account Details</h4>
+                        <div class="bank-detail-row">
+                            <span class="label">Account Title:</span>
+                            <span class="value">Hina Afzal</span>
+                        </div>
+                        <div class="bank-detail-row">
+                            <span class="label">Account Number:</span>
+                            <span class="value">14700010031719300020</span>
+                        </div>
+                        <div class="bank-detail-row">
+                            <span class="label">Bank Name:</span>
+                            <span class="value">Allied Bank</span>
+                        </div>
+                        <div class="bank-detail-row">
+                            <span class="label">Branch Code:</span>
+                            <span class="value">1470</span>
+                        </div>
+                    </div>
+                    
                     <button type="submit" class="btn btn-primary w-full" id="placeOrderBtn">
-                        <i class="fas fa-paper-plane"></i> Place Order
+                        <i class="fas fa-paper-plane"></i> Complete Order
                     </button>
                 </form>
             </div>
@@ -1215,6 +1323,9 @@
                 <div class="order-id-display">
                     Order ID: <span id="orderIdDisplay"></span>
                 </div>
+                <button class="btn btn-whatsapp w-full mb-10" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+                </button>
                 <button class="btn btn-primary" id="successOkBtn">
                     Continue Shopping
                 </button>
@@ -1263,6 +1374,29 @@
         function getPlaceholderImage() {
             return `https://via.placeholder.com/400x300/222/fff?text=HinayaLUXE`;
         }
+
+        // Open WhatsApp
+        window.openWhatsApp = function() {
+            const cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            let message = "Hello HinayaLUXE! I want to place an order.\n\n";
+            
+            cart.forEach((item, index) => {
+                message += `${index + 1}. ${item.title} - ${item.quantity} × PKR ${item.price.toLocaleString()}\n`;
+            });
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            message += `\nTotal: PKR ${total.toLocaleString()}`;
+            
+            // Encode the message for URL
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/923344148636?text=${encodedMessage}`, '_blank');
+        };
+
+        // Show Bank Details
+        window.showBankDetails = function() {
+            const bankDetails = document.getElementById('bankDetails');
+            bankDetails.classList.toggle('hidden');
+        };
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', async () => {
@@ -1724,6 +1858,9 @@
             document.getElementById('summarySubtotal').textContent = `PKR ${total.toLocaleString()}`;
             document.getElementById('summaryTotal').textContent = `PKR ${total.toLocaleString()}`;
             
+            // Hide bank details by default
+            document.getElementById('bankDetails').classList.add('hidden');
+            
             closeModal('cartModal');
             openModal('checkoutModal');
         };
@@ -1796,7 +1933,7 @@
             } catch (error) {
                 console.error('Error placing order:', error);
                 showToast('Failed to place order. Please try again.', 'error');
-                document.getElementById('placeOrderBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Place Order';
+                document.getElementById('placeOrderBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Complete Order';
                 document.getElementById('placeOrderBtn').disabled = false;
             }
         }
@@ -1815,12 +1952,11 @@
             // Search
             document.getElementById('searchInput').addEventListener('input', debounce(searchProducts, 300));
             
-            // Modal closes
-            document.querySelectorAll('.modal-close').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btn.closest('.modal').classList.remove('active');
-                });
-            });
+            // Modal closes - FIXED: All close buttons now work
+            document.getElementById('productModalClose').addEventListener('click', () => closeModal('productModal'));
+            document.getElementById('cartModalClose').addEventListener('click', () => closeModal('cartModal'));
+            document.getElementById('checkoutModalClose').addEventListener('click', () => closeModal('checkoutModal'));
+            document.getElementById('successModalClose').addEventListener('click', () => closeModal('successModal'));
             
             // Close modals on outside click
             document.querySelectorAll('.modal').forEach(modal => {
@@ -1833,11 +1969,6 @@
             
             // Success modal OK
             document.getElementById('successOkBtn').addEventListener('click', () => {
-                closeModal('successModal');
-            });
-            
-            // Success modal close
-            document.getElementById('successModalClose').addEventListener('click', () => {
                 closeModal('successModal');
             });
         }
