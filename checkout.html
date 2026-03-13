@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | HinayaLUXE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #f3f4f6;
+            --color-secondary: #d4af37;
+            --color-accent: #b8860b;
+            --color-light: #ffffff;
+            --color-dark: #0f172a;
+            --color-gray: #6b7280;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-card: #ffffff;
+            --color-border: #e5e7eb;
+            --font-body: 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 4px 15px rgba(15, 23, 42, 0.12);
+            --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.16);
+            --transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font-body);
+            background: var(--color-primary);
+            color: var(--color-dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: var(--transition);
+            font-size: inherit;
+        }
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.94);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-sm);
+        }
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .mobile-logo i {
+            color: var(--color-secondary);
+        }
+        .mobile-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .icon-btn:active {
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 12px 15px 90px;
+        }
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .page-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-bottom: 14px;
+        }
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr);
+            gap: 16px;
+        }
+        .card {
+            background: var(--color-card);
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: var(--shadow-md);
+        }
+        .checkout-steps {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .checkout-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--color-gray);
+            font-size: 0.75rem;
+        }
+        .checkout-step.active { color: var(--color-secondary); }
+        .step-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .checkout-step.active .step-num {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: var(--color-secondary);
+            color: var(--color-secondary);
+        }
+        .section-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .section-heading-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-heading-icon i {
+            color: var(--color-secondary);
+        }
+        .payment-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: rgba(212, 175, 55, 0.12);
+            color: var(--color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        .form-row {
+            margin-bottom: 10px;
+        }
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: var(--color-gray);
+        }
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid var(--color-border);
+            background: var(--color-light);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .form-input:focus, .form-textarea:focus {
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
+        }
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .input-hint {
+            font-size: 0.75rem;
+            color: var(--color-gray);
+            margin-top: 2px;
+        }
+        .payment-methods {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 8px;
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--color-border);
+            padding: 12px;
+            background: var(--color-primary);
+        }
+        .payment-option input {
+            width: 16px;
+            height: 16px;
+        }
+        .payment-option-main {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .payment-option-sub {
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+        .summary-items {
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-right: -4px;
+        }
+        .summary-item {
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .summary-item-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            background: #f9fafb;
+        }
+        .summary-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .summary-item-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .summary-item-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .summary-item-meta {
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+        .summary-row strong {
+            font-weight: 600;
+        }
+        .summary-total {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .btn {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            border: 1px solid var(--color-border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: white;
+            border-color: transparent;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: none;
+        }
+        .btn-outline {
+            background: transparent;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border-color: transparent;
+        }
+        .btn-whatsapp:active {
+            background: #128C7E;
+        }
+        .btn-direct-contact {
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            color: white;
+            border-color: transparent;
+        }
+        .btn-direct-contact:active {
+            opacity: 0.95;
+        }
+        .bank-details {
+            margin-top: 10px;
+            border-radius: 12px;
+            border: 1px dashed rgba(139, 69, 19, 0.5);
+            padding: 10px 12px;
+            background: rgba(139, 69, 19, 0.06);
+            font-size: 0.8rem;
+        }
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .bank-label {
+            color: var(--color-gray);
+        }
+        .bank-value {
+            font-weight: 600;
+            color: var(--color-secondary);
+        }
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-dark);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 100;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-4px);
+        }
+        .toast-success {
+            background: #16a34a;
+        }
+        .toast-error {
+            background: #dc2626;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.97);
+            border-top: 1px solid var(--color-border);
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            padding: 6px 10px;
+            z-index: 40;
+            backdrop-filter: blur(14px);
+        }
+        .bottom-nav a {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+        .bottom-nav a span {
+            display: block;
+            margin-top: 2px;
+        }
+        .bottom-nav a.active {
+            color: var(--color-dark);
+        }
+        .success-state {
+            text-align: center;
+            padding: 40px 15px;
+        }
+        .success-state i {
+            font-size: 3rem;
+            color: var(--color-success);
+            margin-bottom: 10px;
+        }
+        .success-state h2 {
+            font-size: 1.3rem;
+            margin-bottom: 6px;
+        }
+        .success-state p {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+            margin-bottom: 16px;
+        }
+        @media (min-width: 768px) {
+            .checkout-layout {
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.2fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="mobile-header">
+        <a href="cart.html" class="mobile-logo">
+            <i class="fas fa-arrow-left"></i>
+            <span>Cart</span>
+        </a>
+        <div class="mobile-header-actions">
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <h1 class="page-title">Checkout</h1>
+            <p class="page-subtitle">Your details and payment.</p>
+            <div class="checkout-steps">
+                <div class="checkout-step active">
+                    <span class="step-num"><i class="fas fa-user"></i></span>
+                    <span class="step-label">Details</span>
+                </div>
+                <div class="checkout-step">
+                    <span class="step-num"><i class="fas fa-wallet"></i></span>
+                    <span class="step-label">Payment</span>
+                </div>
+                <div class="checkout-step">
+                    <span class="step-num"><i class="fas fa-clipboard-check"></i></span>
+                    <span class="step-label">Review</span>
+                </div>
+            </div>
+            <div class="checkout-layout" id="checkoutLayout">
+                <form class="card" id="checkoutForm">
+                    <div class="section-heading section-heading-icon">
+                        <i class="fas fa-user-circle"></i>
+                        Contact & delivery
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Full name *</label>
+                        <input id="checkoutName" type="text" class="form-input" placeholder="Your full name">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">WhatsApp number *</label>
+                        <input id="checkoutPhone" type="tel" class="form-input" placeholder="03XX-XXXXXXX">
+                        <div class="input-hint">Order confirmation sent here.</div>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Delivery address *</label>
+                        <textarea id="checkoutAddress" class="form-textarea" placeholder="Full address with city"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Notes (optional)</label>
+                        <textarea id="checkoutNotes" class="form-textarea" placeholder="Size, color, instructions"></textarea>
+                    </div>
+                    <div class="section-heading section-heading-icon">
+                        <i class="fas fa-credit-card"></i>
+                        Payment method
+                    </div>
+                    <div class="form-row">
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="cod" checked>
+                                <span class="payment-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                <div>
+                                    <div class="payment-option-main">Cash on Delivery</div>
+                                    <div class="payment-option-sub">Pay when you receive</div>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="bank">
+                                <span class="payment-icon"><i class="fas fa-university"></i></span>
+                                <div>
+                                    <div class="payment-option-main">Bank Transfer</div>
+                                    <div class="payment-option-sub">Transfer to store account</div>
+                                </div>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" name="paymentMethod" value="whatsapp">
+                                <span class="payment-icon"><i class="fab fa-whatsapp"></i></span>
+                                <div>
+                                    <div class="payment-option-main">Confirm on WhatsApp</div>
+                                    <div class="payment-option-sub">Confirm with us first</div>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="bank-details" id="bankDetails" style="display:none;">
+                            <div class="bank-row">
+                                <span class="bank-label">Account Title</span>
+                                <span class="bank-value" id="bankAccountTitle">HinayaLUXE</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Account Number</span>
+                                <span class="bank-value" id="bankAccountNumber">123456789012</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Bank</span>
+                                <span class="bank-value" id="bankName">Meezan Bank</span>
+                            </div>
+                            <div class="bank-row">
+                                <span class="bank-label">Branch</span>
+                                <span class="bank-value" id="bankBranch">Online</span>
+                            </div>
+                            <button type="button" class="btn btn-outline" id="copyBankBtn" style="margin-top:8px;">
+                                <i class="fas fa-copy"></i>
+                                Copy details
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" type="submit" id="placeOrderBtn">
+                        <i class="fas fa-lock"></i>
+                        Place order
+                    </button>
+                    <button type="button" class="btn btn-outline" id="backToCartBtn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to cart
+                    </button>
+                    <button type="button" class="btn btn-whatsapp" id="whatsAppBtn">
+                        <i class="fab fa-whatsapp"></i>
+                        Share Cart on WhatsApp
+                    </button>
+                    <button type="button" class="btn btn-direct-contact" id="shareCartDirectBtn">
+                        <i class="fas fa-comments"></i>
+                        Share Cart via Direct Contact
+                    </button>
+                </form>
+                <div class="card" id="summaryCard">
+                    <div class="section-heading section-heading-icon">
+                        <i class="fas fa-receipt"></i>
+                        Order summary
+                    </div>
+                    <div id="summaryItemsList" class="summary-items"></div>
+                    <div class="summary-row">
+                        <span>Items</span>
+                        <strong id="summaryItems">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong id="summarySubtotal">PKR 0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery</span>
+                        <span>Calculated on confirmation</span>
+                    </div>
+                    <div class="summary-total">
+                        Total: <span id="summaryTotal">PKR 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <nav class="bottom-nav">
+        <a href="store.html">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="about.html">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </a>
+        <a href="contact.html">
+            <i class="fas fa-headset"></i>
+            <span>Contact</span>
+        </a>
+        <a href="cart.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+    </nav>
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJGwJhQ208DI4_ATuddNWDyAjXBoDYXvA",
+            authDomain: "proplan-e3c0c.firebaseapp.com",
+            databaseURL: "https://proplan-e3c0c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "proplan-e3c0c",
+            storageBucket: "proplan-e3c0c.firebasestorage.app",
+            messagingSenderId: "354032871146",
+            appId: "1:354032871146:web:db38e4e7ed764c5d765993",
+            measurementId: "G-VDFC8YYP38"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        let toastTimeout;
+
+        function showToast(message, type) {
+            toastMessage.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+            }
+            if (type === 'error') {
+                toast.classList.add('toast-error');
+            }
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.className = 'toast';
+            }, 2200);
+        }
+
+        function getPlaceholderImage() {
+            return "https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg?auto=compress&cs=tinysrgb&w=800";
+        }
+
+        function getSafeImageUrl(image) {
+            if (!image) return getPlaceholderImage();
+            if (typeof image === 'string' && image.startsWith('data:image')) {
+                return image;
+            }
+            return image;
+        }
+
+        function loadSummary() {
+            const cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            const summaryItemsList = document.getElementById('summaryItemsList');
+            const summaryItems = document.getElementById('summaryItems');
+            const summarySubtotal = document.getElementById('summarySubtotal');
+            const summaryTotal = document.getElementById('summaryTotal');
+
+            if (cart.length === 0) {
+                summaryItemsList.innerHTML = `
+                    <div class="success-state">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h2>No items in cart</h2>
+                        <p>Add items from the store before checkout.</p>
+                        <button class="btn" onclick="window.location.href='store.html'">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to store
+                        </button>
+                    </div>
+                `;
+                summaryItems.textContent = '0';
+                summarySubtotal.textContent = 'PKR 0';
+                summaryTotal.textContent = 'PKR 0';
+                return false;
+            }
+
+            summaryItemsList.innerHTML = cart.map(item => `
+                <div class="summary-item">
+                    <div class="summary-item-image">
+                        <img src="${getSafeImageUrl(item.image)}" alt="${item.title}">
+                    </div>
+                    <div class="summary-item-info">
+                        <div class="summary-item-title">${item.title}</div>
+                        <div class="summary-item-meta">x${item.quantity} • PKR ${Number(item.price || 0).toLocaleString()}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const total = cart.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
+
+            summaryItems.textContent = itemsCount;
+            summarySubtotal.textContent = `PKR ${total.toLocaleString()}`;
+            summaryTotal.textContent = `PKR ${total.toLocaleString()}`;
+            return true;
+        }
+
+        function shareCartViaDirectContact() {
+            const cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            if (cart.length === 0) {
+                showToast('Your cart is empty', 'error');
+                return;
+            }
+            const name = document.getElementById('checkoutName').value || '';
+            const phone = document.getElementById('checkoutPhone').value || '';
+            const address = document.getElementById('checkoutAddress').value || '';
+            const notes = document.getElementById('checkoutNotes').value || '';
+            let message = '🛒 CART SHARE REQUEST\n\n';
+            cart.forEach(item => {
+                const lineTotal = Number(item.price || 0) * item.quantity;
+                message += `• ${item.title} x${item.quantity} - PKR ${lineTotal.toLocaleString()}\n`;
+            });
+            const total = cart.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
+            message += `\nTotal: PKR ${total.toLocaleString()}\n\n`;
+            if (name) message += `Name: ${name}\n`;
+            if (phone) message += `Phone: ${phone}\n`;
+            if (address) message += `Address: ${address}\n`;
+            if (notes) message += `Notes: ${notes}\n`;
+            localStorage.setItem('hinayaluxe_pending_share_cart', message);
+            window.location.href = 'direct-contact.html?shareCart=1';
+        }
+
+        function openWhatsApp() {
+            const cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            if (cart.length === 0) {
+                showToast('Your cart is empty', 'error');
+                return;
+            }
+            const name = document.getElementById('checkoutName').value || '';
+            const phone = document.getElementById('checkoutPhone').value || '';
+            const address = document.getElementById('checkoutAddress').value || '';
+            const notes = document.getElementById('checkoutNotes').value || '';
+
+            let message = 'Hi, I want to confirm my order on HinayaLUXE:%0A%0A';
+            cart.forEach(item => {
+                const lineTotal = Number(item.price || 0) * item.quantity;
+                message += `${item.title} x${item.quantity} - PKR ${lineTotal.toLocaleString()}%0A`;
+            });
+            const total = cart.reduce((sum, item) => sum + (Number(item.price || 0) * item.quantity), 0);
+            message += `%0ATotal: PKR ${total.toLocaleString()}%0A%0A`;
+            if (name) message += `Name: ${name}%0A`;
+            if (phone) message += `WhatsApp: ${phone}%0A`;
+            if (address) message += `Address: ${address}%0A`;
+            if (notes) message += `Notes: ${notes}%0A`;
+
+            window.open(`https://wa.me/${getWhatsAppNumber()}?text=${message}`, '_blank');
+        }
+
+        function saveCustomerInfo(name, phone, address) {
+            const info = { name, phone, address };
+            localStorage.setItem('hinayaluxe_checkout_info', JSON.stringify(info));
+        }
+
+        function loadCustomerInfo() {
+            const raw = localStorage.getItem('hinayaluxe_checkout_info');
+            if (!raw) return;
+            try {
+                const info = JSON.parse(raw);
+                if (info.name) document.getElementById('checkoutName').value = info.name;
+                if (info.phone) document.getElementById('checkoutPhone').value = info.phone;
+                if (info.address) document.getElementById('checkoutAddress').value = info.address;
+            } catch (e) {}
+        }
+
+        function getStoreSettings() {
+            try {
+                const raw = localStorage.getItem('hinayaluxe_settings');
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) { return null; }
+        }
+
+        function applyStoreSettings() {
+            const s = getStoreSettings();
+            if (!s) return;
+            if (s.storeName && document.title) document.title = (document.title.split('|')[0] || '').trim() + ' | ' + s.storeName;
+            const set = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.textContent = val; };
+            set('bankAccountTitle', s.storeBankTitle || s.storeName || '');
+            set('bankAccountNumber', s.storeBankAccount || '');
+            const bankNameBranch = [s.storeBankName].filter(Boolean).join(', ');
+            set('bankName', bankNameBranch || '—');
+            set('bankBranch', s.storeBankName ? '' : 'Online');
+            if (document.getElementById('bankBranch') && !s.storeBankName) document.getElementById('bankBranch').textContent = 'Online';
+        }
+
+        function getWhatsAppNumber() {
+            const s = getStoreSettings();
+            const num = (s && s.storeWhatsApp) ? String(s.storeWhatsApp).replace(/\D/g, '') : '';
+            return num || '923344148636';
+        }
+
+        async function handleCheckout(event) {
+            event.preventDefault();
+            const name = document.getElementById('checkoutName').value.trim();
+            const phone = document.getElementById('checkoutPhone').value.trim();
+            const address = document.getElementById('checkoutAddress').value.trim();
+            const notes = document.getElementById('checkoutNotes').value.trim();
+            const paymentInput = document.querySelector('input[name="paymentMethod"]:checked');
+            const paymentMethod = paymentInput ? paymentInput.value : 'cod';
+
+            const phoneRegex = /^(03\d{2}[-\s]?\d{7})$/;
+            if (!phoneRegex.test(phone)) {
+                showToast('Enter a valid Pakistani number (03XX-XXXXXXX)', 'error');
+                return;
+            }
+            if (!name || !address) {
+                showToast('Fill in all required fields', 'error');
+                return;
+            }
+
+            const cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            if (cart.length === 0) {
+                showToast('Your cart is empty', 'error');
+                return;
+            }
+
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            const originalText = placeOrderBtn.innerHTML;
+            placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            placeOrderBtn.disabled = true;
+
+            try {
+                saveCustomerInfo(name, phone, address);
+                const ordersRef = collection(db, 'orders');
+                const orderPromises = cart.map(item =>
+                    addDoc(ordersRef, {
+                        customerName: name,
+                        customerPhone: phone,
+                        customerAddress: address,
+                        notes: notes,
+                        productId: item.id,
+                        productTitle: item.title,
+                        quantity: item.quantity,
+                        unitPrice: item.price,
+                        totalAmount: Number(item.price || 0) * item.quantity,
+                        status: 'pending',
+                        paymentMethod,
+                        createdAt: new Date().toISOString()
+                    })
+                );
+
+                const results = await Promise.all(orderPromises);
+                const firstOrderId = results[0].id;
+
+                localStorage.removeItem('hinayaluxe_cart');
+                const layout = document.getElementById('checkoutLayout');
+                layout.innerHTML = `
+                    <div class="card" style="grid-column: 1 / -1;">
+                        <div class="success-state">
+                            <i class="fas fa-check-circle"></i>
+                            <h2>Order placed successfully</h2>
+                            <p>Your order ID is <strong>${firstOrderId.substring(0, 8).toUpperCase()}</strong>. We will contact you soon on WhatsApp.</p>
+                            <button class="btn btn-primary" onclick="window.location.href='store.html'">
+                                <i class="fas fa-home"></i>
+                                Back to store
+                            </button>
+                            <button class="btn btn-whatsapp" onclick="(${openWhatsApp.toString()})();">
+                                <i class="fab fa-whatsapp"></i>
+                                Share details on WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                `;
+                showToast('Order placed', 'success');
+            } catch (e) {
+                console.error(e);
+                showToast('Failed to place order. Try again.', 'error');
+                placeOrderBtn.innerHTML = originalText;
+                placeOrderBtn.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutForm = document.getElementById('checkoutForm');
+            const backToCartBtn = document.getElementById('backToCartBtn');
+            const whatsAppBtn = document.getElementById('whatsAppBtn');
+            const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+            const bankDetails = document.getElementById('bankDetails');
+            const copyBankBtn = document.getElementById('copyBankBtn');
+
+            loadCustomerInfo();
+
+            if (!loadSummary()) {
+                checkoutForm.style.display = 'none';
+                return;
+            }
+
+            checkoutForm.addEventListener('submit', handleCheckout);
+
+            if (backToCartBtn) {
+                backToCartBtn.addEventListener('click', () => {
+                    window.location.href = 'cart.html';
+                });
+            }
+
+            if (whatsAppBtn) {
+                whatsAppBtn.addEventListener('click', openWhatsApp);
+            }
+            const shareCartDirectBtn = document.getElementById('shareCartDirectBtn');
+            if (shareCartDirectBtn) {
+                shareCartDirectBtn.addEventListener('click', shareCartViaDirectContact);
+            }
+
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const value = radio.value;
+                    if (value === 'bank') {
+                        bankDetails.style.display = 'block';
+                    } else {
+                        bankDetails.style.display = 'none';
+                    }
+                });
+            });
+
+            applyStoreSettings();
+
+            if (copyBankBtn) {
+                copyBankBtn.addEventListener('click', () => {
+                    const title = document.getElementById('bankAccountTitle')?.textContent || 'Store';
+                    const accountNumber = document.getElementById('bankAccountNumber')?.textContent || '';
+                    const bankName = document.getElementById('bankName')?.textContent || '';
+                    const branch = document.getElementById('bankBranch')?.textContent || '';
+                    const text = `${title}\nAccount: ${accountNumber}\nBank: ${bankName}${branch ? '\nBranch: ' + branch : ''}`;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            showToast('Bank details copied', 'success');
+                        }).catch(() => {
+                            showToast('Unable to copy details', 'error');
+                        });
+                    } else {
+                        showToast('Copy not supported on this device', 'error');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

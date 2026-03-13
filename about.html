@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About Us | HinayaLUXE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #f3f4f6;
+            --color-secondary: #d4af37;
+            --color-accent: #b8860b;
+            --color-light: #ffffff;
+            --color-dark: #0f172a;
+            --color-gray: #6b7280;
+            --color-card: #ffffff;
+            --color-border: #e5e7eb;
+            --font-body: 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 4px 15px rgba(15, 23, 42, 0.12);
+            --transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        html[data-theme="dark"] {
+            --color-primary: #0a0a0a;
+            --color-secondary: #d4af37;
+            --color-accent: #fbbf24;
+            --color-light: #1a1a1a;
+            --color-dark: #f9fafb;
+            --color-gray: #9ca3af;
+            --color-card: #111827;
+            --color-border: #1f2933;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font-body);
+            background: var(--color-primary);
+            color: var(--color-dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: var(--transition);
+            font-size: inherit;
+        }
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.94);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-sm);
+        }
+        html[data-theme="dark"] .mobile-header {
+            background: rgba(15, 23, 42, 0.94);
+        }
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .mobile-logo i {
+            color: var(--color-secondary);
+        }
+        .mobile-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .icon-btn:active {
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px 15px 80px;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .page-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-bottom: 18px;
+        }
+        .card {
+            background: var(--color-card);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 14px;
+        }
+        .section-heading {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .text-muted {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .value-item {
+            display: flex;
+            gap: 10px;
+        }
+        .value-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-secondary);
+        }
+        .value-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .value-text {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        .timeline {
+            margin-top: 8px;
+        }
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .timeline-badge {
+            width: 22px;
+            height: 22px;
+            border-radius: 999px;
+            border: 1px solid var(--color-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            background: var(--color-primary);
+        }
+        .timeline-text {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.97);
+            border-top: 1px solid var(--color-border);
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            padding: 6px 10px;
+            z-index: 40;
+            backdrop-filter: blur(14px);
+        }
+        html[data-theme="dark"] .bottom-nav {
+            background: rgba(15, 23, 42, 0.97);
+        }
+        .bottom-nav a {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+        .bottom-nav a span {
+            display: block;
+            margin-top: 2px;
+        }
+        .bottom-nav a.active {
+            color: var(--color-dark);
+        }
+        @media (min-width: 768px) {
+            .values-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="mobile-header">
+        <a href="store.html" class="mobile-logo">
+            <i class="fas fa-arrow-left"></i>
+            <span>Store</span>
+        </a>
+        <div class="mobile-header-actions">
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <h1 class="page-title">About HinayaLUXE</h1>
+            <p class="page-subtitle">A curated mobile-first luxury store built for modern shoppers.</p>
+            <div class="card">
+                <div class="section-heading">Our story</div>
+                <p class="text-muted">
+                    HinayaLUXE is focused on bringing a smooth, app-like shopping experience 
+                    directly to your phone. Every screen, from product cards to checkout, is 
+                    designed to be fast, clear and easy to use for mobile users.
+                </p>
+            </div>
+            <div class="card">
+                <div class="section-heading">What makes us different</div>
+                <div class="values-grid">
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <div class="value-title">Mobile-first experience</div>
+                            <div class="value-text">
+                                Every page is optimised for thumbs, small screens and quick actions.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div>
+                            <div class="value-title">Curated products</div>
+                            <div class="value-text">
+                                Limited, carefully selected items instead of overwhelming you with choices.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="value-title">Human support</div>
+                            <div class="value-text">
+                                Direct WhatsApp contact on product pages, cart and checkout.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="section-heading">How your order flows</div>
+                <div class="timeline">
+                    <div class="timeline-step">
+                        <div class="timeline-badge">1</div>
+                        <div class="timeline-text">
+                            Explore products with rich cards and open full details like a native app.
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-badge">2</div>
+                        <div class="timeline-text">
+                            Add items to your smart cart and review everything on a dedicated cart page.
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="timeline-badge">3</div>
+                        <div class="timeline-text">
+                            Complete checkout with COD, bank transfer or WhatsApp confirmation.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <nav class="bottom-nav">
+        <a href="store.html">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="about.html" class="active">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </a>
+        <a href="contact.html">
+            <i class="fas fa-headset"></i>
+            <span>Contact</span>
+        </a>
+        <a href="cart.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+    </nav>
+    <script></script>
+</body>
+</html>
