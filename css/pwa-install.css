@@ -1,0 +1,78 @@
+/* PWA install CTA — store & admin footers */
+.footer-pwa {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.pwa-install-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1),
+        box-shadow 0.22s cubic-bezier(0.22, 0.61, 0.36, 1),
+        background 0.22s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+}
+
+.pwa-install-btn:hover {
+    background: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.pwa-install-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.pwa-install-btn:focus-visible {
+    outline: 2px solid var(--color-secondary, #d4af37);
+    outline-offset: 3px;
+}
+
+.pwa-install-btn[hidden] {
+    display: none !important;
+}
+
+/* Admin panel site footer */
+.admin-site-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: var(--color-card, #ffffff);
+    border-top: 1px solid var(--color-border, #e5e7eb);
+    padding: 12px 16px;
+    text-align: center;
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.06);
+}
+
+body.admin-dashboard-active .admin-site-footer {
+    bottom: 62px;
+}
+
+@media (min-width: 1024px) {
+    body.admin-dashboard-active .admin-site-footer {
+        bottom: 0;
+    }
+}
+
+.admin-site-footer-note {
+    margin: 0 0 10px;
+    font-size: 0.75rem;
+    color: var(--color-gray, #6b7280);
+}

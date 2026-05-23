@@ -1,0 +1,33 @@
+{
+  "name": "HinayaLUXE",
+  "short_name": "HinayaLUXE",
+  "description": "HinayaLUXE is a modern fashion and lifestyle shopping platform offering premium clothing, luxury collections, and elegant styles with a smooth mobile shopping experience.",
+  "start_url": "/store.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "dir": "ltr",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "id": "com.hinayaluxe.app",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
