@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "contact": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contact Us | HinayaLUXE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #f3f4f6;
+            --color-secondary: #d4af37;
+            --color-accent: #b8860b;
+            --color-light: #ffffff;
+            --color-dark: #0f172a;
+            --color-gray: #6b7280;
+            --color-card: #ffffff;
+            --color-border: #e5e7eb;
+            --font-body: 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 4px 15px rgba(15, 23, 42, 0.12);
+            --transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        html[data-theme="dark"] {
+            --color-primary: #0a0a0a;
+            --color-secondary: #d4af37;
+            --color-accent: #fbbf24;
+            --color-light: #1a1a1a;
+            --color-dark: #f9fafb;
+            --color-gray: #9ca3af;
+            --color-card: #111827;
+            --color-border: #1f2933;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font-body);
+            background: var(--color-primary);
+            color: var(--color-dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: var(--transition);
+            font-size: inherit;
+        }
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.94);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-sm);
+        }
+        html[data-theme="dark"] .mobile-header {
+            background: rgba(15, 23, 42, 0.94);
+        }
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .mobile-logo i {
+            color: var(--color-secondary);
+        }
+        .mobile-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .icon-btn:active {
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px 15px 80px;
+        }
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .page-subtitle {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-bottom: 18px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+        }
+        .contact-card {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .contact-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-primary);
+            color: var(--color-secondary);
+        }
+        .contact-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .contact-handle {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        .contact-body {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+            margin-left: 44px;
+        }
+        .contact-card:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        .quick-help {
+            margin-top: 18px;
+        }
+        .quick-help h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .quick-help p {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.97);
+            border-top: 1px solid var(--color-border);
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            padding: 6px 10px;
+            z-index: 40;
+            backdrop-filter: blur(14px);
+        }
+        html[data-theme="dark"] .bottom-nav {
+            background: rgba(15, 23, 42, 0.97);
+        }
+        .bottom-nav a {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-gray);
+        }
+        .bottom-nav a span {
+            display: block;
+            margin-top: 2px;
+        }
+        .bottom-nav a.active {
+            color: var(--color-dark);
+        }
+        .direct-contact-hero {
+            display: block;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(184, 134, 11, 0.1));
+            border: 2px solid var(--color-secondary);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+        .direct-contact-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-accent);
+        }
+        .direct-contact-hero-inner {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .direct-contact-hero-icon {
+            width: 64px;
+            height: 64px;
+            min-width: 64px;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+            color: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        .direct-contact-hero-content {
+            flex: 1;
+        }
+        .direct-contact-hero-content h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .direct-contact-hero-content p {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+            margin-bottom: 10px;
+        }
+        .direct-contact-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--color-secondary);
+            font-size: 1rem;
+        }
+        .direct-contact-note {
+            font-size: 0.8rem;
+            color: var(--color-gray);
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--color-border);
+        }
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .direct-contact-hero {
+                padding: 28px 24px;
+            }
+            .direct-contact-hero-icon {
+                width: 72px;
+                height: 72px;
+                min-width: 72px;
+                font-size: 2rem;
+            }
+            .direct-contact-hero-content h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="mobile-header">
+        <a href="store.html" class="mobile-logo">
+            <i class="fas fa-arrow-left"></i>
+            <span>Store</span>
+        </a>
+        <div class="mobile-header-actions">
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <h1 class="page-title">Contact Us</h1>
+            <p class="page-subtitle">Choose the channel that is most convenient for you.</p>
+
+            <!-- BIG Direct Contact - Primary CTA -->
+            <a class="direct-contact-hero" href="direct-contact.html">
+                <div class="direct-contact-hero-inner">
+                    <div class="direct-contact-hero-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="direct-contact-hero-content">
+                        <h2>Direct Contact</h2>
+                        <p>Chat privately with us — Register or Login required</p>
+                        <span class="direct-contact-cta">Open Chat <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </div>
+                <p class="direct-contact-note">Text messages only. No images, voice, or calls. You must register or login to access the chat.</p>
+            </a>
+
+            <div class="contact-grid">
+                <a class="contact-card" href="mailto:contact@hinayaluxe.com">
+                    <div class="contact-header">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <div class="contact-title">Email</div>
+                            <div class="contact-handle">contact@hinayaluxe.com</div>
+                        </div>
+                    </div>
+                    <div class="contact-body">
+                        Ideal for detailed questions and order confirmations.
+                    </div>
+                </a>
+                <a class="contact-card" href="https://wa.me/923344148636" target="_blank">
+                    <div class="contact-header">
+                        <div class="contact-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div>
+                            <div class="contact-title">WhatsApp</div>
+                            <div class="contact-handle">+92 334 4148636</div>
+                        </div>
+                    </div>
+                    <div class="contact-body">
+                        Fastest way to confirm orders, share screenshots and ask questions.
+                    </div>
+                </a>
+                <a class="contact-card" href="#" target="_blank">
+                    <div class="contact-header">
+                        <div class="contact-icon">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+                        <div>
+                            <div class="contact-title">TikTok</div>
+                            <div class="contact-handle">@hinayaluxe</div>
+                        </div>
+                    </div>
+                    <div class="contact-body">
+                        Follow our latest drops, videos and product showcases.
+                    </div>
+                </a>
+                <a class="contact-card" href="#" target="_blank">
+                    <div class="contact-header">
+                        <div class="contact-icon">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <div>
+                            <div class="contact-title">Discord</div>
+                            <div class="contact-handle">Community server</div>
+                        </div>
+                    </div>
+                    <div class="contact-body">
+                        Join the community, ask questions and share feedback.
+                    </div>
+                </a>
+                <a class="contact-card" href="#" target="_blank">
+                    <div class="contact-header">
+                        <div class="contact-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div>
+                            <div class="contact-title">Instagram</div>
+                            <div class="contact-handle">@hinayaluxe</div>
+                        </div>
+                    </div>
+                    <div class="contact-body">
+                        See styling ideas and how others use HinayaLUXE products.
+                    </div>
+                </a>
+            </div>
+            <div class="quick-help">
+                <h2>Order or product questions</h2>
+                <p>
+                    If you have a question about a specific product, the fastest way is to 
+                    open the product page and tap the WhatsApp button so we receive your 
+                    product details automatically.
+                </p>
+            </div>
+        </div>
+    </main>
+    <nav class="bottom-nav">
+        <a href="store.html">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="about.html">
+            <i class="fas fa-info-circle"></i>
+            <span>About</span>
+        </a>
+        <a href="contact.html" class="active">
+            <i class="fas fa-headset"></i>
+            <span>Contact</span>
+        </a>
+        <a href="cart.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </a>
+    </nav>
+    <script></script>
+</body>
+</html>

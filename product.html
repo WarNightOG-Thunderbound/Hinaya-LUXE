@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product | HinayaLUXE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #f3f4f6;
+            --color-secondary: #d4af37;
+            --color-accent: #b8860b;
+            --color-light: #ffffff;
+            --color-dark: #0f172a;
+            --color-gray: #6b7280;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-card: #ffffff;
+            --color-border: #e5e7eb;
+            --font-body: 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 4px 15px rgba(15, 23, 42, 0.12);
+            --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.16);
+            --transition: all 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+        html[data-theme="dark"] {
+            --color-primary: #0a0a0a;
+            --color-secondary: #d4af37;
+            --color-accent: #fbbf24;
+            --color-light: #1a1a1a;
+            --color-dark: #f9fafb;
+            --color-gray: #9ca3af;
+            --color-success: #22c55e;
+            --color-error: #ef4444;
+            --color-warning: #f59e0b;
+            --color-card: #111827;
+            --color-border: #1f2933;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.6);
+            --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.7);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        body {
+            font-family: var(--font-body);
+            background: var(--color-primary);
+            color: var(--color-dark);
+            line-height: 1.5;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            transition: var(--transition);
+            font-size: inherit;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 15px 20px;
+        }
+        .mobile-header {
+            background: rgba(255, 255, 255, 0.94);
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            box-shadow: var(--shadow-sm);
+        }
+        html[data-theme="dark"] .mobile-header {
+            background: rgba(15, 23, 42, 0.94);
+        }
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .mobile-logo i {
+            color: var(--color-secondary);
+        }
+        .mobile-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-sm);
+        }
+        .icon-btn:active {
+            transform: scale(0.97);
+            box-shadow: none;
+        }
+        main {
+            padding-top: 10px;
+        }
+        .product-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr);
+            gap: 20px;
+        }
+        .product-gallery {
+            background: var(--color-card);
+            border-radius: 18px;
+            padding: 12px;
+            box-shadow: var(--shadow-md);
+        }
+        .product-main-image {
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            background: #f9fafb;
+        }
+        .product-main-image img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            max-height: 340px;
+        }
+        .thumbnail-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+        }
+        .thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            flex-shrink: 0;
+        }
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .thumb.active {
+            border-color: var(--color-secondary);
+        }
+        .product-info-card {
+            background: var(--color-card);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--shadow-md);
+        }
+        .product-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--color-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+        .product-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--color-gray);
+            margin-bottom: 10px;
+        }
+        .product-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .product-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+        }
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .product-stock {
+            font-size: 0.85rem;
+            color: var(--color-gray);
+        }
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            border: 1px solid rgba(0,0,0,0.06);
+            background: rgba(212, 175, 55, 0.06);
+            color: var(--color-dark);
+        }
+        html[data-theme="dark"] .badge {
+            border-color: rgba(255,255,255,0.06);
+        }
+        .badge-success {
+            border-color: rgba(34, 197, 94, 0.3);
+            color: var(--color-success);
+            background: rgba(34, 197, 94, 0.06);
+        }
+        .product-description {
+            font-size: 0.9rem;
+            color: var(--color-gray);
+            margin-bottom: 12px;
+        }
+        .product-details-list {
+            list-style: none;
+            margin-bottom: 18px;
+            font-size: 0.9rem;
+        }
+        .product-details-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .product-details-list i {
+            color: var(--color-secondary);
+            margin-top: 2px;
+        }
+        .primary-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: var(--color-card);
+            color: var(--color-dark);
+            border: 1px solid var(--color-border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: white;
+            border-color: transparent;
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+            box-shadow: none;
+        }
+        .btn-outline {
+            background: transparent;
+        }
+        .secondary-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border-color: transparent;
+        }
+        .btn-whatsapp:active {
+            background: #128C7E;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 18px 0 8px;
+        }
+        .details-card {
+            background: var(--color-card);
+            border-radius: 16px;
+            padding: 12px 14px;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.9rem;
+            color: var(--color-gray);
+        }
+        .details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .details-label {
+            color: var(--color-gray);
+        }
+        .details-value {
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-dark);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 100;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-4px);
+        }
+        .toast-success {
+            background: #16a34a;
+        }
+        .toast-error {
+            background: #dc2626;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--color-gray);
+        }
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--color-secondary);
+        }
+        @media (min-width: 768px) {
+            .product-layout {
+                grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="mobile-header">
+        <a href="store.html" class="mobile-logo">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back</span>
+        </a>
+        <div class="mobile-header-actions">
+            <button class="icon-btn" onclick="window.location.href='cart.html'">
+                <i class="fas fa-shopping-cart"></i>
+            </button>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <div id="productContent">
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading product details...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBJGwJhQ208DI4_ATuddNWDyAjXBoDYXvA",
+            authDomain: "proplan-e3c0c.firebaseapp.com",
+            databaseURL: "https://proplan-e3c0c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "proplan-e3c0c",
+            storageBucket: "proplan-e3c0c.firebasestorage.app",
+            messagingSenderId: "354032871146",
+            appId: "1:354032871146:web:db38e4e7ed764c5d765993",
+            measurementId: "G-VDFC8YYP38"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        let toastTimeout;
+
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toast.className = 'toast show';
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+            }
+            if (type === 'error') {
+                toast.classList.add('toast-error');
+            }
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.className = 'toast';
+            }, 2200);
+        }
+
+        function getPlaceholderImage() {
+            return "https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg?auto=compress&cs=tinysrgb&w=800";
+        }
+
+        function getSafeImageUrl(image) {
+            if (!image) return getPlaceholderImage();
+            if (image.startsWith('data:image')) {
+                return image;
+            }
+            return image;
+        }
+
+        function updateMainImage(src) {
+            const main = document.getElementById('mainImage');
+            if (main) {
+                main.src = src;
+            }
+        }
+
+        function renderProduct(product) {
+            const images = product.images && product.images.length > 0 ? product.images : [getPlaceholderImage()];
+            const firstImage = getSafeImageUrl(images[0]);
+            const rating = product.rating || 4.5;
+            const stock = product.stock || 0;
+            const featured = product.featured;
+
+            const productContent = document.getElementById('productContent');
+
+            const detailsList = [];
+            detailsList.push('Carefully curated premium quality product');
+            if (product.category) {
+                detailsList.push('Category: ' + product.category);
+            }
+            if (stock > 0) {
+                detailsList.push('Available stock: ' + stock);
+            }
+
+            productContent.innerHTML = `
+                <div class="product-layout">
+                    <div class="product-gallery">
+                        <div class="product-main-image">
+                            <img id="mainImage" src="${firstImage}" alt="${product.title}">
+                        </div>
+                        <div class="thumbnail-row">
+                            ${images.map((img, index) => `
+                                <div class="thumb ${index === 0 ? 'active' : ''}" data-index="${index}">
+                                    <img src="${getSafeImageUrl(img)}" alt="Thumbnail ${index + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="product-info-card">
+                        <div class="product-category">${product.category || 'Product'}</div>
+                        <h1 class="product-title">${product.title}</h1>
+                        <div class="product-meta">
+                            <span><i class="fas fa-star" style="color:#facc15;"></i> ${rating.toFixed(1)}/5</span>
+                            <span><i class="fas fa-box"></i> ${stock > 0 ? stock + ' in stock' : 'Out of stock'}</span>
+                        </div>
+                        <div class="product-price-row">
+                            <div class="product-price">PKR ${Number(product.price || 0).toLocaleString()}</div>
+                            <div class="product-stock">${stock > 0 ? 'Fast delivery available' : 'Currently limited'}</div>
+                        </div>
+                        <div class="badge-row">
+                            ${featured ? '<span class="badge badge-success"><i class="fas fa-gem"></i> Featured pick</span>' : ''}
+                            <span class="badge"><i class="fas fa-shield-alt"></i> Premium quality</span>
+                            <span class="badge"><i class="fas fa-truck"></i> Cash on Delivery</span>
+                        </div>
+                        <p class="product-description">
+                            ${product.description || 'Premium quality product from HinayaLUXE with carefully selected materials and attention to detail.'}
+                        </p>
+                        <ul class="product-details-list">
+                            ${detailsList.map(text => `
+                                <li>
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${text}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="primary-actions">
+                            <button class="btn btn-primary" id="addToCartBtn">
+                                <i class="fas fa-shopping-bag"></i>
+                                Add to Cart
+                            </button>
+                            <button class="btn btn-outline" id="buyNowBtn">
+                                <i class="fas fa-bolt"></i>
+                                Buy Now
+                            </button>
+                        </div>
+                        <div class="secondary-actions">
+                            <button class="btn btn-whatsapp" id="whatsAppBtn">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </button>
+                            <button class="btn" onclick="window.location.href='cart.html'">
+                                <i class="fas fa-shopping-cart"></i>
+                                View Cart
+                            </button>
+                        </div>
+                        <div class="section-title">Highlights</div>
+                        <div class="details-card">
+                            <div class="details-row">
+                                <div class="details-label">Brand</div>
+                                <div class="details-value">HinayaLUXE</div>
+                            </div>
+                            <div class="details-row">
+                                <div class="details-label">Category</div>
+                                <div class="details-value">${product.category || 'Product'}</div>
+                            </div>
+                            <div class="details-row">
+                                <div class="details-label">Rating</div>
+                                <div class="details-value">${rating.toFixed(1)} / 5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.querySelectorAll('.thumb').forEach((thumb, index) => {
+                thumb.addEventListener('click', () => {
+                    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                    updateMainImage(getSafeImageUrl(images[index]));
+                });
+            });
+
+            const addToCartBtn = document.getElementById('addToCartBtn');
+            const buyNowBtn = document.getElementById('buyNowBtn');
+            const whatsAppBtn = document.getElementById('whatsAppBtn');
+
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', () => {
+                    addToCart(product);
+                });
+            }
+            if (buyNowBtn) {
+                buyNowBtn.addEventListener('click', () => {
+                    addToCart(product, true);
+                });
+            }
+            if (whatsAppBtn) {
+                whatsAppBtn.addEventListener('click', () => {
+                    openWhatsAppWithProduct(product);
+                });
+            }
+        }
+
+        function addToCart(product, goCheckout = false) {
+            let cart = JSON.parse(localStorage.getItem('hinayaluxe_cart')) || [];
+            const existing = cart.find(item => item.id === product.id);
+            if (existing) {
+                if (existing.quantity + 1 > (product.stock || 9999)) {
+                    showToast('Cannot add more than available stock', 'error');
+                    return;
+                }
+                existing.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    title: product.title,
+                    price: product.price || 0,
+                    quantity: 1,
+                    stock: product.stock || 0,
+                    image: product.images && product.images[0] ? product.images[0] : null
+                });
+            }
+            localStorage.setItem('hinayaluxe_cart', JSON.stringify(cart));
+            showToast('Added to cart');
+            if (goCheckout) {
+                window.location.href = 'checkout.html';
+            }
+        }
+
+        function openWhatsAppWithProduct(product) {
+            const price = Number(product.price || 0).toLocaleString();
+            const message = `Hi, I am interested in this product on HinayaLUXE:%0A%0A` +
+                `Product: ${product.title}%0A` +
+                `Category: ${product.category || 'Product'}%0A` +
+                `Price: PKR ${price}%0A%0A` +
+                `Can you share more details and availability?`;
+            window.open(`https://wa.me/923344148636?text=${message}`, '_blank');
+        }
+
+        async function loadProduct() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const productContent = document.getElementById('productContent');
+
+            if (!id) {
+                productContent.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <p>Product not found.</p>
+                        <button class="btn" onclick="window.location.href='store.html'">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to store
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const cached = JSON.parse(localStorage.getItem('hinayaluxe_products') || '[]');
+                const cachedProduct = cached.find(p => p.id === id);
+                if (cachedProduct) {
+                    renderProduct(cachedProduct);
+                    return;
+                }
+
+                const ref = doc(db, 'products', id);
+                const snap = await getDoc(ref);
+                if (!snap.exists()) {
+                    productContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>Product not found.</p>
+                            <button class="btn" onclick="window.location.href='store.html'">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to store
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                const data = snap.data();
+                const product = {
+                    id: snap.id,
+                    title: data.title || 'Product',
+                    description: data.description || '',
+                    price: data.price || 0,
+                    category: data.category || '',
+                    images: data.images || [],
+                    stock: data.stock || 0,
+                    featured: data.featured || false,
+                    rating: data.rating || 4.5
+                };
+                renderProduct(product);
+            } catch (e) {
+                const cached = JSON.parse(localStorage.getItem('hinayaluxe_products') || '[]');
+                const fallback = cached.find(p => p.id === id);
+                if (fallback) {
+                    renderProduct(fallback);
+                } else {
+                    productContent.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Failed to load product.</p>
+                            <button class="btn" onclick="window.location.href='store.html'">
+                                <i class="fas fa-arrow-left"></i>
+                                Back to store
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProduct();
+        });
+    </script>
+</body>
+</html>
